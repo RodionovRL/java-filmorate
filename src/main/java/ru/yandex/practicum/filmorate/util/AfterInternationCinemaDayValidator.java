@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.util;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 public class AfterInternationCinemaDayValidator implements ConstraintValidator<AfterInternationCinemaDay, LocalDate> {
