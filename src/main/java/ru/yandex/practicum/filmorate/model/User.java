@@ -22,7 +22,6 @@ public class User {
     @NotBlank(message = "Логин не должен быть пустым")
     private String login;
     private String name;
-    @Past (message = "Пользователь ещё не родился?")
+    @Past(message = "Пользователь ещё не родился?")
     private LocalDate birthday;
-
 }

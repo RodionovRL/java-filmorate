@@ -18,6 +18,7 @@ public class FilmService {
 
     public Film addFilm(Film film) {
         int id = getNewId();
+
         film.setId(id);
         films.put(id, film);
         log.info("Добавлен фильм {}", film);
@@ -43,6 +44,7 @@ public class FilmService {
 
     private int getNewId() {
         int newId = ++ids;
+
         log.trace("создан новый filmId id={}", newId);
         return newId;
     }

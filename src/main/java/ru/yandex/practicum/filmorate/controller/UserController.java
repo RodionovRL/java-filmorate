@@ -19,12 +19,12 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    UserController(){
+    UserController() {
         userService = new UserService();
     }
 
     @PostMapping
-    public ResponseEntity<User> postUser(@Valid @RequestBody User user){
+    public ResponseEntity<User> postUser(@Valid @RequestBody User user) {
         log.info("получен запрос на добавление пользователя");
         User savedUser = userService.addUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);

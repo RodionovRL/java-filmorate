@@ -20,9 +20,10 @@ public class UserService {
 
     public User addUser(@NotNull User user) {
         int id = getNewId();
+
         user.setId(id);
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            log.info("Поле имя пустое, в качестве имени установлен login=\"{}\"",user.getLogin());
+            log.info("Поле имя пустое, в качестве имени установлен login=\"{}\"", user.getLogin());
             user.setName(user.getLogin());
         }
         users.put(id, user);
@@ -49,6 +50,7 @@ public class UserService {
 
     private int getNewId() {
         int newId = ++ids;
+
         log.trace("создан новый userId id={}", newId);
         return newId;
     }

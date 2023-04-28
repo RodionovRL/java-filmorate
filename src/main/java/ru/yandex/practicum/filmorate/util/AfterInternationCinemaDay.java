@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ FIELD })
+@Target({FIELD})
 @Retention(RUNTIME)
 @Constraint(validatedBy = AfterInternationCinemaDayValidator.class)
 @Documented
@@ -18,8 +18,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface AfterInternationCinemaDay {
     String message() default "{Дата релиза не может быть ранее 28 декабря 1895}";
 
-    Class<?>[] groups() default { };
+    Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default { };
+    Class<? extends Payload>[] payload() default {};
 
 }
