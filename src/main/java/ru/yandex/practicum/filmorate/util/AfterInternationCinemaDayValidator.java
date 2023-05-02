@@ -15,6 +15,9 @@ public class AfterInternationCinemaDayValidator implements ConstraintValidator<A
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext constraintValidatorContext) {
-        return localDate.isAfter(INTERNATION_CINEMA_DAY);
+        if (localDate == null) {
+            return false;
+        }
+        return localDate.isAfter(INTERNATION_CINEMA_DAY) || localDate.isEqual(INTERNATION_CINEMA_DAY);
     }
 }

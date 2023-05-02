@@ -16,11 +16,11 @@ import java.util.Collection;
 @RequestMapping("/users")
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
-    UserController() {
-        userService = new UserService();
+    UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping

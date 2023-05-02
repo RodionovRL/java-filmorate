@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +15,10 @@ import java.util.Map;
 @Service
 public class FilmService {
     private static int ids;
+    @Getter
     private final Map<Integer, Film> films = new HashMap<>();
 
-    public Film addFilm(Film film) {
+    public Film addFilm(@NotNull Film film) {
         int id = getNewId();
 
         film.setId(id);
@@ -38,7 +40,7 @@ public class FilmService {
 
     public Collection<Film> getAllFilms() {
 
-        log.info("передан список всех фильмов {}", films.values());
+        log.info("переданы все {} фильмов ", films.values().size());
         return films.values();
     }
 
