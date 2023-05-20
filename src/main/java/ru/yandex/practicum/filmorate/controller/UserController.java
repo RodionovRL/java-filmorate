@@ -55,9 +55,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<List<Integer>> addNewFriend(
-            @PathVariable("id") Integer id,
-            @PathVariable("friendId") Integer friendId
+    public ResponseEntity<List<Integer>> addNewFriend(@PathVariable("id") Integer id,
+                                                      @PathVariable("friendId") Integer friendId
     ) {
         log.info("получен запрос на добавление пользователю с id {} друга с id {}", id, friendId);
 
@@ -66,9 +65,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> deleteFriend(
-            @PathVariable("id") Integer id,
-            @PathVariable("friendId") Integer friendId
+    public ResponseEntity<User> deleteFriend(@PathVariable("id") Integer id,
+                                             @PathVariable("friendId") Integer friendId
     ) {
         log.info("получен запрос на удаление друга с id {} у пользователя пользователю с id {} ", friendId, id);
 
@@ -85,9 +83,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public ResponseEntity<Collection<User>> getCommonFriends(
-            @PathVariable("id") Integer id,
-            @PathVariable("otherId") Integer otherId
+    public ResponseEntity<Collection<User>> getCommonFriends(@PathVariable("id") Integer id,
+                                                             @PathVariable("otherId") Integer otherId
     ) {
         log.info("получен запрос общих друзей для {} и {}", id, otherId);
 

@@ -53,27 +53,25 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<Film> setLikeToFilm (
-            @PathVariable("id") Integer id,
-            @PathVariable("userId") Integer userId) {
+    public ResponseEntity<Film> setLikeToFilm(@PathVariable("id") Integer id,
+                                              @PathVariable("userId") Integer userId) {
         log.info("получен запрос на на добавление фильму с id= {} лайка от пользователя с id= {}", id, userId);
         Film film = filmService.setLikeToFilm(id, userId);
         return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public ResponseEntity<Film> delLikeFromFilm (
-            @PathVariable("id") Integer id,
-            @PathVariable("userId") Integer userId) {
+    public ResponseEntity<Film> delLikeFromFilm(@PathVariable("id") Integer id,
+                                                @PathVariable("userId") Integer userId) {
         log.info("получен запрос на на удаление у фильма с id= {} лайка пользователя с id= {}", id, userId);
         Film film = filmService.delLikeFromFilm(id, userId);
         return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms (
+    public ResponseEntity<List<Film>> getPopularFilms(
             @RequestParam(value = "count", required = false, defaultValue = "10") Integer count
-            ) {
+    ) {
         log.info("получен запрос на получение ТОП{} популярных фильмов", count);
         List<Film> films = filmService.getPopularFilms(count);
         return new ResponseEntity<>(films, HttpStatus.OK);
