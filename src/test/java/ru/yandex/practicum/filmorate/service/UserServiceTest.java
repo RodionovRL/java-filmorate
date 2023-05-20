@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.UserServiceException;
+import ru.yandex.practicum.filmorate.api.UserStorage;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,12 +15,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
+    UserStorage userStorage;
     UserService userService;
     User user;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService();
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
 
         user = User.builder()
                 .id(Integer.MAX_VALUE)
@@ -31,10 +35,10 @@ class UserServiceTest {
 
     @Test
     void shouldBeUserServiceExceptionWhenUpdateUserWithUnknownId() {
-        UserServiceException exception = Assertions.assertThrows(UserServiceException.class,
+        UserNotFoundException exception = Assertions.assertThrows(UserNotFoundException.class,
                 () -> userService.updateUser(user));
 
-        assertEquals("updateUser: пользователь с запрошенным id не найден", exception.getMessage());
+        assertEquals(String.format("updateUser:  не найден пользователь %s", user), exception.getMessage());
     }
 
     @Test

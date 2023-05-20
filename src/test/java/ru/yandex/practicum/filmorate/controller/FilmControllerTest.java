@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,8 @@ public class FilmControllerTest {
                 null,
                 "Description",
                 LocalDate.of(1895, 12, 27),
-                -1);
+                -1,
+                new HashSet<>());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +74,12 @@ public class FilmControllerTest {
 
     @Test
     void testPostFilmWithBlankName() throws Exception {
-        Film film = new Film(1, "", "Description", LocalDate.now(), 120);
+        Film film = new Film(1,
+                "",
+                "Description",
+                LocalDate.now(),
+                120,
+                new HashSet<>());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
