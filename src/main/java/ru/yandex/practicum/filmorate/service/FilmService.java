@@ -81,7 +81,7 @@ public class FilmService {
                 .limit(count)
                 .collect(Collectors.toList());
 
-        log.info("возвращён ТОП-{} фильмов: {}", count, topFilms );
+        log.info("возвращён ТОП-{} фильмов: {}", count, topFilms);
 
         return topFilms;
     }
