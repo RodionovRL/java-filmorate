@@ -31,7 +31,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
-    private Set<Integer> likes = new HashSet<>();
+    private final Set<Integer> likes = new HashSet<>();
 
     public int compareByLikes(Film f2) {
         return f2.getLikes().size() - likes.size();

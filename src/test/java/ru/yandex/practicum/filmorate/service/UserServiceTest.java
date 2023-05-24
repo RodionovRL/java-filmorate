@@ -38,7 +38,7 @@ class UserServiceTest {
         UserNotFoundException exception = Assertions.assertThrows(UserNotFoundException.class,
                 () -> userService.updateUser(user));
 
-        assertEquals(String.format("updateUser:  не найден пользователь %s", user), exception.getMessage());
+        assertEquals(String.format("пользователь с запрошенным id = %s не найден", user.getId()), exception.getMessage());
     }
 
     @Test

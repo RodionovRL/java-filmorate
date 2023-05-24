@@ -12,16 +12,13 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmServiceTest {
     FilmStorage filmStorage;
     UserStorage userStorage;
-    UserService userService;
 
     FilmService filmService;
     Film film;
@@ -33,9 +30,8 @@ class FilmServiceTest {
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
         filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService(filmStorage, userService);
+        filmService = new FilmService(filmStorage, userStorage);
         filmName = "TestFilm";
         filmDescription = "TestFilm Description";
         filmReleaseDate = LocalDate.of(2000, 1, 1);
@@ -63,7 +59,6 @@ class FilmServiceTest {
         String filmForUpdateDescription = "Updated TestFilm Description";
         LocalDate filmForUpdateReleaseDate = LocalDate.of(2010, 1, 1);
         int filmForUpdateDuration = 180;
-        Set<Integer> friendsIds = new HashSet<>();
 
         int id = filmService.addFilm(film).getId();
 
@@ -71,8 +66,7 @@ class FilmServiceTest {
                 filmForUpdateName,
                 filmForUpdateDescription,
                 filmForUpdateReleaseDate,
-                filmForUpdateDuration,
-                friendsIds);
+                filmForUpdateDuration);
 
         filmService.updateFilm(filmForUpdate);
 
@@ -101,32 +95,27 @@ class FilmServiceTest {
                 "film1",
                 "description1",
                 LocalDate.of(2001, 1, 1),
-                110,
-                new HashSet<>());
+                110);
         Film film2 = new Film(1,
                 "film2",
                 "description2",
                 LocalDate.of(2001, 1, 2),
-                120,
-                new HashSet<>());
+                120);
         Film film3 = new Film(1,
                 "film3",
                 "description3",
                 LocalDate.of(2001, 1, 3),
-                130,
-                new HashSet<>());
+                130);
         Film film4 = new Film(1,
                 "film4",
                 "description4",
                 LocalDate.of(2001, 1, 4),
-                140,
-                new HashSet<>());
+                140);
         Film film5 = new Film(1,
                 "film5",
                 "description5",
                 LocalDate.of(2001, 1, 5),
-                150,
-                new HashSet<>());
+                150);
 
         List<Film> testFilms = new ArrayList<>();
 

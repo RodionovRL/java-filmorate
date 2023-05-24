@@ -8,11 +8,11 @@ import java.util.Set;
 
 public interface UserStorage {
 
-    void put(int id, User newUser);
+    User addUser(User newUser);
 
-    User replace(int id, User user);
+    User updateUser(int id, User user);
 
-    Collection<User> values();
+    Collection<User> getAllUsers();
 
     User getUserById(Integer id);
 

@@ -14,33 +14,46 @@ import java.util.Map;
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
+
+    private static int ids;
     @Getter
     private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
-    public void put(int id, Film film) {
+    public Film addFilm(Film film) {
+        int id = getNewId();
+        film.setId(id);
         films.put(id, film);
+        return film;
     }
 
     @Override
-    public Film replace(int id, Film film) {
-
-        if (!films.containsKey(film.getId())) {
-            log.error("updateFilm: фильм с id={} не найден", film.getId());
-            throw new FilmNotFoundException("updateFilm: фильм с запрошенным id не найден");
-        }
-
+    public Film updateFilm(Film film) {
+        checkFilmIsContains(film.getId());
         return films.replace(film.getId(), film);
     }
 
     @Override
-    public Collection<Film> values() {
+    public Collection<Film> getAllFilms() {
         return films.values();
     }
 
     @Override
     public Film getFilmById(int id) {
-
+        checkFilmIsContains(id);
         return films.get(id);
+    }
+
+    private void checkFilmIsContains(Integer id) {
+        if (!films.containsKey(id)) {
+            log.error("updateFilm: фильм с id = {} не найден", id);
+            throw new FilmNotFoundException("updateFilm: фильм с запрошенным id не найден");
+        }
+    }
+
+    private int getNewId() {
+        int newId = ++ids;
+        log.trace("создан новый filmId = {}", newId);
+        return newId;
     }
 }

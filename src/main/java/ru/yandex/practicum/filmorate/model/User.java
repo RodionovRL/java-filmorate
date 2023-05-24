@@ -35,7 +35,7 @@ public class User {
     @Past(message = "Пользователь ещё не родился?")
     private LocalDate birthday;
 
-    private Set<Integer> friendsIds = new HashSet<>();
+    private final Set<Integer> friendsIds = new HashSet<>();
 
     public void addFriend(Integer id) {
         friendsIds.add(id);
