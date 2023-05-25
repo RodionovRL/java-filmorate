@@ -72,7 +72,11 @@ public class FilmControllerTest {
 
     @Test
     void testPostFilmWithBlankName() throws Exception {
-        Film film = new Film(1, "", "Description", LocalDate.now(), 120);
+        Film film = new Film(1,
+                "",
+                "Description",
+                LocalDate.now(),
+                120);
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)

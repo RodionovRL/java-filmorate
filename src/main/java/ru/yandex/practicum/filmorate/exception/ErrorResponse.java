@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class FilmServiceException extends RuntimeException {
-    @Getter
-    private String message;
+@Getter
+public class ErrorResponse {
+    private String error;
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class UserServiceException extends RuntimeException {
+public class FilmNotFoundException extends RuntimeException {
     @Getter
     private String message;
 }

@@ -3,8 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.FilmServiceException;
+import ru.yandex.practicum.filmorate.api.FilmStorage;
+import ru.yandex.practicum.filmorate.api.UserStorage;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +17,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmServiceTest {
+    FilmStorage filmStorage;
+    UserStorage userStorage;
+
     FilmService filmService;
     Film film;
     String filmName;
@@ -22,7 +29,9 @@ class FilmServiceTest {
 
     @BeforeEach
     void setUp() {
-        filmService = new FilmService();
+        userStorage = new InMemoryUserStorage();
+        filmStorage = new InMemoryFilmStorage();
+        filmService = new FilmService(filmStorage, userStorage);
         filmName = "TestFilm";
         filmDescription = "TestFilm Description";
         filmReleaseDate = LocalDate.of(2000, 1, 1);
@@ -74,7 +83,7 @@ class FilmServiceTest {
 
     @Test
     void shouldBeFilmServiceExceptionWhenUpdateFilmWithUnknownId() {
-        FilmServiceException exception = Assertions.assertThrows(FilmServiceException.class,
+        FilmNotFoundException exception = Assertions.assertThrows(FilmNotFoundException.class,
                 () -> filmService.updateFilm(film));
 
         assertEquals("updateFilm: фильм с запрошенным id не найден", exception.getMessage());
