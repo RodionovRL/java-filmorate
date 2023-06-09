@@ -50,13 +50,13 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "UPDATE FILM SET " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? " +
                 "WHERE ID = ?";
-        int numChanged = jdbcTemplate.update(sqlQuery
-                , film.getName()
-                , film.getDescription()
-                , film.getReleaseDate()
-                , film.getDuration()
-                , film.getMpa().getId()
-                , film.getId());
+        int numChanged = jdbcTemplate.update(sqlQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId(),
+                film.getId());
         if (numChanged == 0) {
             log.error("фильм с запрошенным id {} не найден", film.getId());
             throw new FilmNotFoundException(String.format(
@@ -114,9 +114,9 @@ public class FilmDbStorage implements FilmStorage {
         film.delLike(userId);
         String sqlQuery = "DELETE FROM LIKES " +
                 "WHERE FILM_ID = ? AND USER_ID = ?";
-        int numChanged = jdbcTemplate.update(sqlQuery
-                , filmId
-                , userId);
+        int numChanged = jdbcTemplate.update(sqlQuery,
+                filmId,
+                userId);
         log.info("у фильма с id={} удалён лайк пользователя с id={}", filmId, userId);
         return numChanged == 0;
     }

@@ -41,12 +41,12 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "UPDATE USERS SET " +
                 "NAME = ?, EMAIL = ?, LOGIN = ?, BIRTHDAY = ? " +
                 "WHERE ID = ?";
-        int numChanged = jdbcTemplate.update(sqlQuery
-                , user.getName()
-                , user.getEmail()
-                , user.getLogin()
-                , user.getBirthday()
-                , user.getId());
+        int numChanged = jdbcTemplate.update(sqlQuery,
+                user.getName(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getBirthday(),
+                user.getId());
         if (numChanged == 0) {
             log.error("пользователь с запрошенным id {} не найден", id);
             throw new UserNotFoundException(String.format(
