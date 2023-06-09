@@ -102,9 +102,9 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "MERGE INTO LIKES " +
                 "(FILM_ID, USER_ID)" +
                 "VALUES (?, ?)";
-        int numChanged = jdbcTemplate.update(sqlQuery
-                , filmId
-                , userId);
+        int numChanged = jdbcTemplate.update(sqlQuery,
+                filmId,
+                userId);
         return numChanged > 0;
     }
 
