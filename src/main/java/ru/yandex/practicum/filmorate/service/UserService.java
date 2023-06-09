@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
@@ -23,7 +23,6 @@ public class UserService {
     }
 
     public User addUser(User newUser) {
-
         checkName(newUser);
         User addedUser = userStorage.addUser(newUser);
 
@@ -32,7 +31,6 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-
         checkName(user);
         User oldUser = userStorage.updateUser(user.getId(), user);
         log.info("Информация о пользователе {} изменена на {}", oldUser, user);
@@ -40,27 +38,23 @@ public class UserService {
     }
 
     public Collection<User> getAllUsers() {
-
         log.info("переданы все {} пользователей", userStorage.getAllUsers().size());
         return userStorage.getAllUsers();
     }
 
-    public void addFriend(Integer id, Integer friendId) {
-        User user = getUserById(id);
-        User friend = getUserById(friendId);
-
-        user.addFriend(friendId);
-        friend.addFriend(id);
-
-        log.info("User {} и User {} теперь друзья", user, friend);
+    public boolean addFriend(Long id, Long friendId) {
+        if (userStorage.addFriend(id, friendId)) {
+            log.info("Пользователь id={} добавил в друзья пользователя id={}", id, friendId);
+            return true;
+        }
+        return false;
     }
 
-    public List<User> getAllUsersFriends(Integer id) {
-        User user = getUserById(id);
-        return userStorage.getUsersByIds(user.getFriendsIds());
+    public List<User> getAllUsersFriends(Long id) {
+        return userStorage.getUsersFriends(id);
     }
 
-    public List<User> getCommonFriend(Integer id, Integer otherId) {
+    public List<User> getCommonFriend(Long id, Long otherId) {
         List<User> userFriends = getAllUsersFriends(id);
         List<User> otherUserFriends = getAllUsersFriends(otherId);
 
@@ -70,22 +64,19 @@ public class UserService {
 
         log.info("Возвращены общие друзья пользователя с id={} и пользователя с id={} :{}", id, otherId, commonFriends);
 
-
         return commonFriends;
     }
 
-    public User getUserById(Integer id) {
-
+    public User getUserById(Long id) {
         return userStorage.getUserById(id);
     }
 
-    public User deleteUsersFriend(Integer id, Integer exFriendId) {
-        User user = getUserById(id);
-        User exFriend = getUserById(exFriendId);
-
-        user.delFriend(exFriendId);
-        log.info("User {} и User {} больше не друзья", user, exFriend);
-        return user;
+    public boolean deleteUsersFriend(Long id, Long exFriendId) {
+        if (userStorage.deleteFriend(id, exFriendId)) {
+            log.info("User id={} и User id={} больше не друзья", id, exFriendId);
+            return true;
+        }
+        return false;
     }
 
     private void checkName(@NotNull User user) {
@@ -94,5 +85,4 @@ public class UserService {
             user.setName(user.getLogin());
         }
     }
-
 }

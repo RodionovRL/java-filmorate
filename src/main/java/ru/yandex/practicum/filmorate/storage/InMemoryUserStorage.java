@@ -13,19 +13,19 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private static int ids;
-    private final Map<Integer, User> users = new HashMap<>();
+    private static long ids;
+    private final Map<Long, User> users = new HashMap<>();
 
     @Override
     public User addUser(User newUser) {
-        int id = getNewId();
+        long id = getNewId();
         newUser.setId(id);
         users.put(id, newUser);
         return newUser;
     }
 
     @Override
-    public User updateUser(int id, User user) {
+    public User updateUser(long id, User user) {
         checkUserIsContains(id);
         user.setId(id);
         return users.replace(id, user);
@@ -37,24 +37,41 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
         checkUserIsContains(id);
         return users.get(id);
     }
 
     @Override
-    public List<User> getUsersByIds(Set<Integer> friendsIds) {
-        if (friendsIds == null) {
+    public List<User> getUsersFriends(Long id) {
+        User user = getUserById(id);
+        if (user.getFriendsIds() == null) {
             return new ArrayList<>();
         }
 
         return users.entrySet().stream()
-                .filter(x -> friendsIds.contains(x.getKey()))
+                .filter(x -> user.getFriendsIds().contains(x.getKey()))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
-    private void checkUserIsContains(Integer id) {
+    @Override
+    public boolean addFriend(Long id, Long friendId) {
+        User user = getUserById(id);
+        checkUserIsContains(friendId);
+
+        return user.addFriend(friendId);
+    }
+
+    @Override
+    public boolean deleteFriend(Long id, Long exFriendId) {
+        User user = getUserById(id);
+        User exFriend = getUserById(exFriendId);
+
+        return user.delFriend(exFriendId);
+    }
+
+    private void checkUserIsContains(Long id) {
         if (!users.containsKey(id)) {
             log.error("пользователь с запрошенным id {} не найден", id);
             throw new UserNotFoundException(String.format(
@@ -62,8 +79,8 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    private int getNewId() {
-        int newId = ++ids;
+    private long getNewId() {
+        long newId = ++ids;
         log.trace("создан новый userId = {}", newId);
         return newId;
     }

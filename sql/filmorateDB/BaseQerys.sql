@@ -24,6 +24,13 @@ WHERE u.id = (SELECT fr.id
               HAVING count(fr.id) = 2)
 ;
 
+-- Выбрать всех друзей пользователя 1
+SELECT u.id,
+       u.name
+FROM users u
+         LEFT JOIN friends f on u.id = f.friend_id
+WHERE f.user_id = 1;
+
 -- Выбрать все фильмы
 SELECT *
 FROM film;
@@ -45,7 +52,7 @@ FROM genre;
 SELECT f.name,
        f.description,
        f.duration,
-       r.name raiting,
+       r.name                      raiting,
        string_agg(g.name, ', ') AS genres
 FROM film f
          LEFT JOIN rating r on f.rating_id = r.id
@@ -56,9 +63,9 @@ GROUP BY f.name, f.description, f.duration, r.name;
 
 -- Получение ТОП-2 фильмов
 SELECT f.name,
-        count(l.film_id) rate
+       count(l.film_id) rate
 FROM film f
-JOIN likes l on f.id = l.film_id
+         JOIN likes l on f.id = l.film_id
 GROUP BY f.name
 HAVING count(l.film_id) >= 2
 ORDER BY rate desc

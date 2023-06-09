@@ -28,8 +28,8 @@ ___
 
 
 ### SQL для быстрого старта:  
-* ####  [Сборка БД](sql/filmorateDB/CreateRuFilmorateDB.sql)
-* ####  [Заполнение БД тестовыми данными](sql/filmorateDB/DataRuFilmorateDB.sql)
+* ####  [Сборка БД](src/main/resources/schema.sql)
+* ####  [Заполнение БД тестовыми данными](src/main/resources/not_data.sql)
 * ####  [Основные запросы](sql/filmorateDB/BaseQerys.sql)
   
 ___

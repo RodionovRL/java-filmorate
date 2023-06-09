@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Set;
@@ -27,7 +28,7 @@ class UserTest {
                 .email("validUser@ya.ru")
                 .name("validUser")
                 .login("validUserLogin")
-                .birthday(LocalDate.of(2000, 1, 2))
+                .birthday(Date.valueOf(LocalDate.of(2000, 1, 2)))
                 .build();
 
         invalidUser = new User();
@@ -48,7 +49,7 @@ class UserTest {
         invalidUser.setBirthday(null);
 
         Set<ConstraintViolation<User>> violations = validator.validate(invalidUser);
-        String[] expectedMessages = new String[] {"Необходимо ввести email адрес",
+        String[] expectedMessages = new String[]{"Необходимо ввести email адрес",
                 "Логин не должен быть пустым",
                 "Необходимо ввести логин",
                 "Необходимо задать дату рождения"};
@@ -69,10 +70,10 @@ class UserTest {
     public void couldRightErrorMessagesWhenNotValidFieldsLoginIsBlankBirthdayIsFuture() {
         invalidUser = validUser;
         invalidUser.setLogin("");
-        invalidUser.setBirthday(LocalDate.of(2025,1,1));
+        invalidUser.setBirthday(Date.valueOf(LocalDate.of(2025, 1, 1)));
 
         Set<ConstraintViolation<User>> violations = validator.validate(invalidUser);
-        String[] expectedMessages =  new String[] {"Логин не должен быть пустым",
+        String[] expectedMessages = new String[]{"Логин не должен быть пустым",
                 "Пользователь ещё не родился?"};
 
         String[] actualMessages = violations.stream()

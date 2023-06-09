@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +13,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static java.util.Comparator.comparing;
 
 @Builder
 @Data
@@ -21,7 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Film {
 
-    private int id;
+    private long id;
     @NotNull(message = "Не задано название фильма")
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
@@ -31,17 +33,44 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
-    private final Set<Integer> likes = new HashSet<>();
+    private Set<Genre> genres = new TreeSet<>(comparing(Genre::getId, Comparator.naturalOrder()));
+    private Mpa mpa = new Mpa();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        return getDuration() == film.getDuration() && Objects.equals(getName(), film.getName()) && Objects.equals(getDescription(), film.getDescription()) && Objects.equals(getReleaseDate(), film.getReleaseDate()) && Objects.equals(getGenres(), film.getGenres()) && Objects.equals(getMpa(), film.getMpa()) && Objects.equals(getLikes(), film.getLikes());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getDescription(), getReleaseDate(), getDuration(), getGenres(), getMpa(), getLikes());
+    }
+
+    @JsonIgnore
+    private final Set<Long> likes = new HashSet<>();
 
     public int compareByLikes(Film f2) {
         return f2.getLikes().size() - likes.size();
     }
 
-    public void addLike(int userId) {
-        likes.add(userId);
+    public boolean addLike(long userId) {
+        return likes.add(userId);
     }
 
-    public void delLike(int userId) {
-        likes.remove(userId);
+    public boolean delLike(long userId) {
+        return likes.remove(userId);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("release_date", releaseDate);
+        values.put("duration", duration);
+        values.put("mpa_id", mpa.getId());
+        return values;
     }
 }

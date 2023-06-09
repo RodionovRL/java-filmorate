@@ -14,9 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +49,9 @@ public class FilmControllerTest {
                 null,
                 "Description",
                 LocalDate.of(1895, 12, 27),
-                -1);
+                -1,
+                new HashSet<>(),
+                new Mpa());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +80,9 @@ public class FilmControllerTest {
                 "",
                 "Description",
                 LocalDate.now(),
-                120);
+                120,
+                new HashSet<>(),
+                new Mpa());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
