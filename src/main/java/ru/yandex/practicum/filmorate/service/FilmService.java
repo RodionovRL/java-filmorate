@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -34,6 +35,8 @@ public class FilmService {
     public Film updateFilm(Film film) {
         if (filmStorage.updateFilm(film).isEmpty()) {
             log.warn("фильм не найден {}", film);
+            throw new FilmNotFoundException(String.format(
+                    "фильм с запрошенным id = %s не найден", film.getId()));
         }
         log.info("Информация о фильме изменена {}", film);
         return film;

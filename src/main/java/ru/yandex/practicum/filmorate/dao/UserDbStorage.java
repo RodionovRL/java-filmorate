@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -131,8 +131,9 @@ public class UserDbStorage implements UserStorage {
 
     static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
         String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        Optional<Long> result = Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, Long.class, id));
-        if (result.isEmpty()) {
+        try {
+            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
             log.error("пользователь с запрошенным id {} не найден", id);
             throw new UserNotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
