@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -97,7 +96,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
-        checkUserIsExist(userId);
+        UserDbStorage.checkUserIsExist(userId, jdbcTemplate);
         Film film = getFilmById(filmId);
         film.addLike(userId);
         String sqlQuery = "MERGE INTO LIKES " +
@@ -243,14 +242,5 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
-    }
-
-    private void checkUserIsExist(Long id) {
-        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        if (jdbcTemplate.update(sqlQuery, id) == 0) {
-            log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
-                    "пользователь с запрошенным id = %s не найден", id));
-        }
     }
 }

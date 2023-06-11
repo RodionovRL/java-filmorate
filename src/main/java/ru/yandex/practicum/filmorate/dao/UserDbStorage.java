@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -81,7 +82,7 @@ public class UserDbStorage implements UserStorage {
             log.error("Нельзя добавить себя в друзья id=friendId={}", id);
             return false;
         }
-        checkUserIsExist(friendId);
+        checkUserIsExist(friendId, jdbcTemplate);
         getUserById(id).addFriend(friendId);
 
         String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) " +
@@ -98,7 +99,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsersFriends(Long id) {
-        checkUserIsExist(id);
+        checkUserIsExist(id, jdbcTemplate);
         String sqlQuery = "SELECT * FROM USERS U " +
                 "LEFT JOIN FRIENDS F ON U.ID = F.FRIEND_ID " +
                 "WHERE F.USER_ID = ?";
@@ -108,8 +109,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean deleteFriend(Long id, Long exFriendId) {
-        checkUserIsExist(id);
-        checkUserIsExist(exFriendId);
+        checkUserIsExist(id, jdbcTemplate);
+        checkUserIsExist(exFriendId, jdbcTemplate);
         String sqlQuery = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         if (jdbcTemplate.update(sqlQuery, id, exFriendId) == 0) {
             log.info("пользователь id={} не является другом id={}", exFriendId, id);
@@ -128,9 +129,10 @@ public class UserDbStorage implements UserStorage {
                 .build();
     }
 
-    private void checkUserIsExist(Long id) {
+    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
         String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        if (jdbcTemplate.update(sqlQuery, id) == 0) {
+        Optional<Long> result = Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, Long.class, id));
+        if (result.isEmpty()) {
             log.error("пользователь с запрошенным id {} не найден", id);
             throw new UserNotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
