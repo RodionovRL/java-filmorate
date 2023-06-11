@@ -32,8 +32,10 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        Film oldFilm = filmStorage.updateFilm(film);
-        log.info("Информация о фильме {} изменена на {}", oldFilm, film);
+        if (filmStorage.updateFilm(film).isEmpty()) {
+            log.warn("фильм не найден {}", film);
+        }
+        log.info("Информация о фильме изменена {}", film);
         return film;
     }
 

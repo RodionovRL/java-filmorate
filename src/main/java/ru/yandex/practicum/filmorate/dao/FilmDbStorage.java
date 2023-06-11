@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -46,7 +47,7 @@ public class FilmDbStorage implements FilmStorage {
 
 
     @Override
-    public Film updateFilm(Film film) {
+    public Optional<Film> updateFilm(Film film) {
         String sqlQuery = "UPDATE FILM SET " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? " +
                 "WHERE ID = ?";
@@ -59,15 +60,14 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId());
         if (numChanged == 0) {
             log.error("фильм с запрошенным id {} не найден", film.getId());
-            throw new FilmNotFoundException(String.format(
-                    "фильм с запрошенным id = %s не найден", film.getId()));
+            return Optional.empty();
         }
 
         setMpaName(film);
         setGenreName(film);
         setFilmGenreInBd(film);
 
-        return film;
+        return Optional.of(film);
     }
 
     @Override
@@ -97,6 +97,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
+        checkUserIsExist(userId);
         Film film = getFilmById(filmId);
         film.addLike(userId);
         String sqlQuery = "MERGE INTO LIKES " +
@@ -242,5 +243,14 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
+    }
+
+    private void checkUserIsExist(Long id) {
+        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
+        if (jdbcTemplate.update(sqlQuery, id) == 0) {
+            log.error("пользователь с запрошенным id {} не найден", id);
+            throw new UserNotFoundException(String.format(
+                    "пользователь с запрошенным id = %s не найден", id));
+        }
     }
 }

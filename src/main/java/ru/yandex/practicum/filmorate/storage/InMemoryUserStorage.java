@@ -26,7 +26,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(long id, User user) {
-        checkUserIsContains(id);
+        checkUserIsExist(id);
         user.setId(id);
         return users.replace(id, user);
     }
@@ -38,7 +38,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(Long id) {
-        checkUserIsContains(id);
+        checkUserIsExist(id);
         return users.get(id);
     }
 
@@ -58,7 +58,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public boolean addFriend(Long id, Long friendId) {
         User user = getUserById(id);
-        checkUserIsContains(friendId);
+        checkUserIsExist(friendId);
 
         return user.addFriend(friendId);
     }
@@ -66,12 +66,12 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public boolean deleteFriend(Long id, Long exFriendId) {
         User user = getUserById(id);
-        User exFriend = getUserById(exFriendId);
+        checkUserIsExist(exFriendId);
 
         return user.delFriend(exFriendId);
     }
 
-    private void checkUserIsContains(Long id) {
+    private void checkUserIsExist(Long id) {
         if (!users.containsKey(id)) {
             log.error("пользователь с запрошенным id {} не найден", id);
             throw new UserNotFoundException(String.format(

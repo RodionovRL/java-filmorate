@@ -77,11 +77,15 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean addFriend(Long id, Long friendId) {
+        if (id.equals(friendId)) {
+            log.error("Нельзя добавить себя в друзья id=friendId={}", id);
+            return false;
+        }
+        checkUserIsExist(friendId);
+        getUserById(id).addFriend(friendId);
+
         String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) " +
                 "VALUES (?, ?)";
-
-        getUserById(friendId);
-        getUserById(id).addFriend(friendId);
         try {
             int result = jdbcTemplate.update(sqlQuery, id, friendId);
             return result > 0;
@@ -94,7 +98,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsersFriends(Long id) {
-        getUserById(id);
+        checkUserIsExist(id);
         String sqlQuery = "SELECT * FROM USERS U " +
                 "LEFT JOIN FRIENDS F ON U.ID = F.FRIEND_ID " +
                 "WHERE F.USER_ID = ?";
@@ -104,8 +108,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean deleteFriend(Long id, Long exFriendId) {
-        getUserById(id);
-
+        checkUserIsExist(id);
+        checkUserIsExist(exFriendId);
         String sqlQuery = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         if (jdbcTemplate.update(sqlQuery, id, exFriendId) == 0) {
             log.info("пользователь id={} не является другом id={}", exFriendId, id);
@@ -122,5 +126,14 @@ public class UserDbStorage implements UserStorage {
                 .login(resultSet.getString("login"))
                 .birthday(resultSet.getDate("birthday"))
                 .build();
+    }
+
+    private void checkUserIsExist(Long id) {
+        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
+        if (jdbcTemplate.update(sqlQuery, id) == 0) {
+            log.error("пользователь с запрошенным id {} не найден", id);
+            throw new UserNotFoundException(String.format(
+                    "пользователь с запрошенным id = %s не найден", id));
+        }
     }
 }
