@@ -7,11 +7,13 @@ import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,13 +62,15 @@ class FilmServiceTest {
         LocalDate filmForUpdateReleaseDate = LocalDate.of(2010, 1, 1);
         int filmForUpdateDuration = 180;
 
-        int id = filmService.addFilm(film).getId();
+        long id = filmService.addFilm(film).getId();
 
         Film filmForUpdate = new Film(id,
                 filmForUpdateName,
                 filmForUpdateDescription,
                 filmForUpdateReleaseDate,
-                filmForUpdateDuration);
+                filmForUpdateDuration,
+                new HashSet<>(),
+                new Mpa());
 
         filmService.updateFilm(filmForUpdate);
 
@@ -95,27 +99,37 @@ class FilmServiceTest {
                 "film1",
                 "description1",
                 LocalDate.of(2001, 1, 1),
-                110);
+                110,
+                new HashSet<>(),
+                new Mpa());
         Film film2 = new Film(1,
                 "film2",
                 "description2",
                 LocalDate.of(2001, 1, 2),
-                120);
+                120,
+                new HashSet<>(),
+                new Mpa());
         Film film3 = new Film(1,
                 "film3",
                 "description3",
                 LocalDate.of(2001, 1, 3),
-                130);
+                130,
+                new HashSet<>(),
+                new Mpa());
         Film film4 = new Film(1,
                 "film4",
                 "description4",
                 LocalDate.of(2001, 1, 4),
-                140);
+                140,
+                new HashSet<>(),
+                new Mpa());
         Film film5 = new Film(1,
                 "film5",
                 "description5",
                 LocalDate.of(2001, 1, 5),
-                150);
+                150,
+                new HashSet<>(),
+                new Mpa());
 
         List<Film> testFilms = new ArrayList<>();
 

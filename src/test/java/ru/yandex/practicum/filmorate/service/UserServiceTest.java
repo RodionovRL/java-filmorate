@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ class UserServiceTest {
                 .email("TestUser@ya.ru")
                 .login("TestUserLogin")
                 .name("")
-                .birthday(LocalDate.of(2000, 1, 1))
+                .birthday(Date.valueOf(LocalDate.of(2000, 1, 1)))
                 .build();
     }
 
@@ -51,7 +52,7 @@ class UserServiceTest {
     @Test
     void shouldSetNameSameLoginWhenUpdateUserAndNameIsEmpty() {
         user.setName("TestName");
-        int updateId = userService.addUser(user).getId();
+        long updateId = userService.addUser(user).getId();
         user.setName("");
         user.setId(updateId);
         userService.updateUser(user);
@@ -64,9 +65,9 @@ class UserServiceTest {
         String updateEmail = "updatedMail@ya.ru";
         String updateLogin = "UpdatedLogin";
         String updateName = "UpdatedName";
-        LocalDate updateBirthday = LocalDate.of(2002, 2, 2);
+        Date updateBirthday = Date.valueOf(LocalDate.of(2002, 2, 2));
 
-        int updateId = userService.addUser(user).getId();
+        long updateId = userService.addUser(user).getId();
 
         User updateUser = User.builder()
                 .id(updateId)
@@ -97,35 +98,35 @@ class UserServiceTest {
                 .email("mail1.ya.ru")
                 .login("login1")
                 .name("name1")
-                .birthday(LocalDate.of(1981, 1, 1))
+                .birthday(Date.valueOf(LocalDate.of(1981, 1, 1)))
                 .build();
         User user2 = User.builder()
                 .id(1)
                 .email("mail2.ya.ru")
                 .login("login2")
                 .name("name2")
-                .birthday(LocalDate.of(1981, 1, 2))
+                .birthday(Date.valueOf(LocalDate.of(1981, 1, 2)))
                 .build();
         User user3 = User.builder()
                 .id(2)
                 .email("mail3.ya.ru")
                 .login("login3")
                 .name("name3")
-                .birthday(LocalDate.of(1981, 1, 3))
+                .birthday(Date.valueOf(LocalDate.of(1981, 1, 3)))
                 .build();
         User user4 = User.builder()
                 .id(3)
                 .email("mail4.ya.ru")
                 .login("login4")
                 .name("name4")
-                .birthday(LocalDate.of(1981, 1, 4))
+                .birthday((Date.valueOf(LocalDate.of(1981, 1, 4))))
                 .build();
         User user5 = User.builder()
                 .id(4)
                 .email("mail5.ya.ru")
                 .login("login5")
                 .name("name5")
-                .birthday(LocalDate.of(1981, 1, 5))
+                .birthday(Date.valueOf(LocalDate.of(1981, 1, 5)))
                 .build();
 
         List<User> testUsers = new ArrayList<>();

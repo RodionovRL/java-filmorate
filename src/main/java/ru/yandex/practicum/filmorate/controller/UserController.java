@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
-            @PathVariable(value = "id") int id
+            @PathVariable(value = "id") long id
     ) {
         log.info("получен запрос на получение пользователя по id {}", id);
 
@@ -57,42 +56,41 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<List<Integer>> addNewFriend(@PathVariable("id") Integer id,
-                                                      @PathVariable("friendId") Integer friendId
+    public ResponseEntity<Boolean> addNewFriend(@PathVariable("id") Long id,
+                                                @PathVariable("friendId") Long friendId
     ) {
-        log.info("получен запрос на дружбу между пользователями с id {} и id {}", id, friendId);
+        log.info("получен запрос на добавление пользователю id={} друга id={}", id, friendId);
 
-        userService.addFriend(id, friendId);
-        return new ResponseEntity<>(Arrays.asList(id, friendId), HttpStatus.OK);
+        boolean result = userService.addFriend(id, friendId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> deleteFriend(@PathVariable("id") Integer id,
-                                             @PathVariable("friendId") Integer friendId
+    public ResponseEntity<Boolean> deleteFriend(@PathVariable("id") Long id,
+                                                @PathVariable("friendId") Long friendId
     ) {
         log.info("получен запрос на разрыв дружбы пользователей с id {} и id {}", friendId, id);
 
-        User user = userService.deleteUsersFriend(id, friendId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        boolean result = userService.deleteUsersFriend(id, friendId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/friends")
-    public ResponseEntity<Collection<User>> getUsersFriends(@PathVariable("id") Integer id) {
+    public ResponseEntity<Collection<User>> getUsersFriends(@PathVariable("id") Long id) {
         log.info("получен запрос всех друзей пользователя с id {}", id);
 
         Collection<User> friends = userService.getAllUsersFriends(id);
         return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
+
     @GetMapping("/{id}/friends/common/{otherId}")
-    public ResponseEntity<Collection<User>> getCommonFriends(@PathVariable("id") Integer id,
-                                                             @PathVariable("otherId") Integer otherId
+    public ResponseEntity<Collection<User>> getCommonFriends(@PathVariable("id") Long id,
+                                                             @PathVariable("otherId") Long otherId
     ) {
         log.info("получен запрос общих друзей для {} и {}", id, otherId);
 
         List<User> commonFriends = userService.getCommonFriend(id, otherId);
         return new ResponseEntity<>(commonFriends, HttpStatus.OK);
     }
-
-
 }

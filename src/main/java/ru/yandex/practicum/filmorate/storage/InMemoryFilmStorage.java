@@ -6,10 +6,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -17,20 +18,20 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private static int ids;
     @Getter
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     @Override
     public Film addFilm(Film film) {
-        int id = getNewId();
+        long id = getNewId();
         film.setId(id);
         films.put(id, film);
         return film;
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public Optional<Film> updateFilm(Film film) {
         checkFilmIsContains(film.getId());
-        return films.replace(film.getId(), film);
+        return Optional.ofNullable(films.replace(film.getId(), film));
     }
 
     @Override
@@ -39,12 +40,63 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         checkFilmIsContains(id);
         return films.get(id);
     }
 
-    private void checkFilmIsContains(Integer id) {
+    @Override
+    public boolean setLikeToFilm(Long filmId, Long userId) {
+        Film film = getFilmById(filmId);
+        if (film.addLike(userId)) {
+            log.info("у фильма с id={} удалён лайк пользователя с id={}", filmId, userId);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean delLikeFromFilm(Long filmId, Long userId) {
+        Film film = getFilmById(filmId);
+        if (film.delLike(userId)) {
+            log.info("у фильма с id={} удалён лайк пользователя с id={}", filmId, userId);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<Film> getTopPopularFilms(int count) {
+        List<Film> topFilms = getAllFilms().stream()
+                .sorted(Film::compareByLikes)
+                .limit(count)
+                .collect(Collectors.toList());
+
+        log.debug("возвращён ТОП-{} фильмов: {}", count, topFilms);
+        return topFilms;
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Genre getGenreById(Integer id) {
+        return new Genre(0, "xxx");
+    }
+
+    @Override
+    public List<Mpa> getAllMpa() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Mpa getMpaById(Integer id) {
+        return new Mpa();
+    }
+
+    private void checkFilmIsContains(Long id) {
         if (!films.containsKey(id)) {
             log.error("updateFilm: фильм с id = {} не найден", id);
             throw new FilmNotFoundException("updateFilm: фильм с запрошенным id не найден");
