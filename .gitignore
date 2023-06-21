@@ -49,3 +49,7 @@ checkstyle.xml
 mvnw.*
 /mvnw
 .mvn
+
+### local not used .sql ###
+**/src/main/resources/not_*.sql
+
