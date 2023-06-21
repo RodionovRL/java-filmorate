@@ -1,11 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.yandex.practicum.filmorate.util.AfterInternationCinemaDay;
 
 import javax.validation.constraints.NotBlank;
@@ -22,35 +18,31 @@ import static java.util.Comparator.comparing;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
-
+    @EqualsAndHashCode.Exclude
+    @Positive
     private long id;
+
     @NotNull(message = "Не задано название фильма")
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
+
     @Size(max = 200, message = "Описание должно быть не более 200 символов")
     private String description;
+
     @AfterInternationCinemaDay(message = "Дата релиза не может быть ранее 28 декабря 1895!")
     private LocalDate releaseDate;
+
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
-    private Set<Genre> genres = new TreeSet<>(comparing(Genre::getId, Comparator.naturalOrder()));
-    private Mpa mpa = new Mpa();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Film film = (Film) o;
-        return getDuration() == film.getDuration() && Objects.equals(getName(), film.getName()) && Objects.equals(getDescription(), film.getDescription()) && Objects.equals(getReleaseDate(), film.getReleaseDate()) && Objects.equals(getGenres(), film.getGenres()) && Objects.equals(getMpa(), film.getMpa()) && Objects.equals(getLikes(), film.getLikes());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getDescription(), getReleaseDate(), getDuration(), getGenres(), getMpa(), getLikes());
-    }
 
     @JsonIgnore
     private final Set<Long> likes = new HashSet<>();
+
+    private Set<Director> directors;
+
+    private Mpa mpa;
+
+    private Set<Genre> genres = new TreeSet<>(comparing(Genre::getId, Comparator.naturalOrder()));
 
     public int compareByLikes(Film f2) {
         return f2.getLikes().size() - likes.size();

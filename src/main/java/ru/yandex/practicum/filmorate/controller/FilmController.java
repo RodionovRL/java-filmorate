@@ -106,4 +106,19 @@ public class FilmController {
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
     }
+
+    /* TODO
+    *   add new endpoints:
+    *   1) POST /films:
+    *   {
+        "name": "New film",
+        "releaseDate": "1999-04-30",
+        "description": "New film about friends",
+        "duration": 120,
+        "mpa": { "id": 3},
+        "genres": [{ "id": 1}],
+        "director": [{ "id": 1}]
+    *   }
+    *   2) GET /films/director/{directorId}?sortBy=[year,likes]
+    * */
 }
