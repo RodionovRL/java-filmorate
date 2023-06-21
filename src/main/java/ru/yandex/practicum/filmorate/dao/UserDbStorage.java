@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ErrorInsertToDbException;
@@ -138,5 +139,10 @@ public class UserDbStorage implements UserStorage {
             throw new UserNotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
+    }
+    public boolean isUserExists(Long id) {
+        String sql = "SELECT * FROM USERS WHERE user_id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
+        return userRows.first();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -242,5 +243,10 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
+    }
+    public boolean isFilmExists(Long id) {
+        String sql = "SELECT * FROM FILMS WHERE film_id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
+        return userRows.next();
     }
 }
