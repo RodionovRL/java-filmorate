@@ -140,6 +140,7 @@ public class UserDbStorage implements UserStorage {
                     "пользователь с запрошенным id = %s не найден", id));
         }
     }
+
     public boolean isUserExists(Long id) {
         String sql = "SELECT * FROM USERS WHERE user_id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
