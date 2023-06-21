@@ -18,7 +18,6 @@ import java.util.Collection;
 
 
 @RestController
-//@Validated
 @Slf4j
 @RequestMapping("/reviews")
 public class ReviewController {
@@ -62,8 +61,8 @@ public class ReviewController {
 
 	@PutMapping("/{id}/like/{userId}")
 	public void addUserLike(@PathVariable Long id, @PathVariable Long userId) {
-		 log.info("Request to add like to review with id = {} by user with userId = {}", id, userId);
-		 reviewService.addUserLike(id, userId);
+		log.info("Request to add like to review with id = {} by user with userId = {}", id, userId);
+		reviewService.addUserLike(id, userId);
 	}
 
 	@PutMapping("/{id}/dislike/{userId}")
