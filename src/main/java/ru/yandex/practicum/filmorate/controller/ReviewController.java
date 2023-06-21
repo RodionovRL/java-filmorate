@@ -30,7 +30,7 @@ public class ReviewController {
 	}
 
 	@GetMapping
-	public Collection <Review> findAll(@RequestParam(required = false) Long filmId,
+	public Collection<Review> findAll(@RequestParam(required = false) Long filmId,
 									   @RequestParam(defaultValue = "10", required = false) Long count) {
 		log.info("Request to get reviews, filmId = {}, count = {}", filmId == null ? "all" : filmId, count);
 		return reviewService.getAllReviews(filmId, count);
