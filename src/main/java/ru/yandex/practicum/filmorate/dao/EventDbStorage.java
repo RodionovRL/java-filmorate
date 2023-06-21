@@ -24,8 +24,7 @@ public class EventDbStorage implements EventStorage, RowMapper<Event> {
 
 	@Override
 	public List<Event> getEventsByUserId(Long id) {
-		return jdbcTemplate.query(GET_ALL_USER_EVENTS,
-				this, id);
+		return jdbcTemplate.query(GET_ALL_USER_EVENTS, this, id);
 	}
 
 	@Override
