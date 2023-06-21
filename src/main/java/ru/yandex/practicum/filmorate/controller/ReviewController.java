@@ -59,7 +59,7 @@ public class ReviewController {
 		log.info("Request to delete review by id = {}", id);
 		reviewService.deleteReviewById(id);
 	}
-	//------------------------------------------------------
+
 	@PutMapping("/{id}/like/{userId}")
 	public void addUserLike(@PathVariable Long id, @PathVariable Long userId) {
 		log.info("Request to add like to review with id = {} by user with userId = {}", id, userId);
