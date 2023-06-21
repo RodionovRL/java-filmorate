@@ -58,7 +58,8 @@ public class ReviewDbStorage implements ReviewStorage {
 	public Review add(Review review) {
 		review.setUseful(0L);
 		if (!userDbStorage.isUserExists(review.getUserId())) {
-			throw new UserNotFoundException(String.format("Attempt to create review by user with absent id = %d", review.getUserId()));
+			throw new UserNotFoundException(String.format("Attempt to create review by user with absent id = %d",
+					review.getUserId()));
 		}
 		if (!filmDbStorage.isFilmExists(review.getFilmId())) {
 			throw new FilmNotFoundException(String.format("Attempt to create review to film with absent id = %d", review.getFilmId()));
