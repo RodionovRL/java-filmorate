@@ -30,4 +30,6 @@ public interface FilmStorage {
     List<Mpa> getAllMpa();
 
     Mpa getMpaById(Integer id);
+
+    List<Film> getListCommonFilms(Long userId, Long friendId);
 }
