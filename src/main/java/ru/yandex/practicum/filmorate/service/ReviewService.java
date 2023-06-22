@@ -4,13 +4,13 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ErrorInsertToDbException;
 import ru.yandex.practicum.filmorate.exception.ReviewNotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.api.EventStorage;
 import ru.yandex.practicum.filmorate.api.ReviewStorage;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -26,7 +26,7 @@ public class ReviewService {
 
 	public Review getReviewById(final Long id) {
 		return reviewStorage.getById(id).orElseThrow(() ->
-				new ReviewNotFoundException(String.format("Attempt to get review with absent id = %d",
+				new ReviewNotFoundException(String.format("Попытка получить отзыв с отсутствующим id = %d",
 						id)));
 	}
 
@@ -60,7 +60,7 @@ public class ReviewService {
 		Review review = null;
 		try {
 			review = reviewStorage.getById(id).get();
-		} catch (NoSuchElementException e) {
+		} catch (ErrorInsertToDbException e) {
 			// ignore
 		}
 		reviewStorage.deleteById(id);

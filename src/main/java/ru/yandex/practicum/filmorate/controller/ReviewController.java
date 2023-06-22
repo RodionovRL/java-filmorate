@@ -31,55 +31,55 @@ public class ReviewController {
 	@GetMapping
 	public Collection<Review> findAll(@RequestParam(required = false) Long filmId,
 									   @RequestParam(defaultValue = "10", required = false) Long count) {
-		log.info("Request to get reviews, filmId = {}, count = {}", filmId == null ? "all" : filmId, count);
+		log.info("Запрос на получение отзывов, filmId = {}, count = {}", filmId == null ? "all" : filmId, count);
 		return reviewService.getAllReviews(filmId, count);
 	}
 
 	@GetMapping("/{id}")
 	public Review getReviewById(@PathVariable Long id) {
-		log.info("Request to get review by id = {}", id);
+		log.info("Запрос на получение отзыва по id = {}", id);
 		return reviewService.getReviewById(id);
 	}
 
 	@PostMapping
 	public Review createReview(@Valid @RequestBody Review review) {
-		log.info("Request to add review {}", review);
+		log.info("Запрос на добавление отзыва {}", review);
 		return reviewService.addReview(review);
 	}
 
 	@PutMapping
 	public Review updateReview(@Valid @RequestBody Review review) {
-		log.info("Request to update review {}", review);
+		log.info("Запрос на обновление обзора {}", review);
 		return reviewService.updateReview(review);
 	}
 
 	@DeleteMapping("/{id}")
 	public void deleteReviewById(@PathVariable Long id) {
-		log.info("Request to delete review by id = {}", id);
+		log.info("Запрос на удаление отзыва от id = {}", id);
 		reviewService.deleteReviewById(id);
 	}
 
 	@PutMapping("/{id}/like/{userId}")
 	public void addUserLike(@PathVariable Long id, @PathVariable Long userId) {
-		log.info("Request to add like to review with id = {} by user with userId = {}", id, userId);
+		log.info("Запрос добавить \"Нравится\" к отзыву с помощью id = {} пользователем с userId = {}", id, userId);
 		reviewService.addUserLike(id, userId);
 	}
 
 	@PutMapping("/{id}/dislike/{userId}")
 	public void addUserDislike(@PathVariable Long id, @PathVariable Long userId) {
-		log.info("Request to add dislike to review with id = {} by user with userId = {}", id, userId);
+		log.info("Запрос добавить \"не нравится\" к отзыву с помощью id = {} пользователем с userId = {}", id, userId);
 		reviewService.addUserDislike(id, userId);
 	}
 
 	@DeleteMapping("/{id}/like/{userId}")
 	public void deleteUserLike(@PathVariable Long id, @PathVariable Long userId) {
-		log.info("Request to delete like from review with id = {} by user with userId = {}", id, userId);
+		log.info("Запрос на удаление лайка из обзора с помощью id = {} пользователем с userId = {}", id, userId);
 		reviewService.deleteUserLike(id, userId);
 	}
 
 	@DeleteMapping("/{id}/dislike/{userId}")
 	public void deleteUserDislike(@PathVariable Long id, @PathVariable Long userId) {
-		log.info("Request to delete dislike from review with id = {} by user with userId = {}", id, userId);
+		log.info("Запрос на удаление \"не нравится\" из обзора с помощью id = {} пользователем с userId = {}", id, userId);
 		reviewService.deleteUserDislike(id, userId);
 	}
 }

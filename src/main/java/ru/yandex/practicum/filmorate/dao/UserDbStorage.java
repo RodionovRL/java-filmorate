@@ -142,8 +142,9 @@ public class UserDbStorage implements UserStorage {
     }
 
     public boolean isUserExists(Long id) {
-        String sql = "SELECT * FROM USERS WHERE user_id = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
+        String sqlQuery = "SELECT * FROM USERS WHERE user_id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
+        jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
         return userRows.first();
     }
 }

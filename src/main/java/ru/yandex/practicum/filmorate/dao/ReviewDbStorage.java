@@ -58,11 +58,11 @@ public class ReviewDbStorage implements ReviewStorage {
 	public Review add(Review review) {
 		review.setUseful(0L);
 		if (!userDbStorage.isUserExists(review.getUserId())) {
-			throw new UserNotFoundException(String.format("Attempt to create review by user with absent id = %d",
+			throw new UserNotFoundException(String.format("Попытка создать отзыв пользователем с отсутствующим id = %d",
 					review.getUserId()));
 		}
 		if (!filmDbStorage.isFilmExists(review.getFilmId())) {
-			throw new FilmNotFoundException(String.format("Attempt to create review to film with absent id = %d", review.getFilmId()));
+			throw new FilmNotFoundException(String.format("Попытка создать отзыв к фильму с отсутствующим id = %d", review.getFilmId()));
 		}
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
 				.withTableName("REVIEWS")
@@ -98,10 +98,10 @@ public class ReviewDbStorage implements ReviewStorage {
 					review.getContent(),
 					review.getIsPositive(),
 					review.getReviewId());
-			log.info("Review {} has been succesfully updated", review);
+			log.info("Review {}  был успешно обновлен", review);
 			return review;
 		} else {
-			throw new ReviewNotFoundException(String.format("Attempt to update review with " +
+			throw new ReviewNotFoundException(String.format("Попытайтесь обновить отзыв с помощью " +
 					"absent id = %d", review.getReviewId()));
 		}
 	}
