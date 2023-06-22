@@ -106,4 +106,11 @@ public class FilmController {
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
     }
+
+    @GetMapping("/films/common?userId={userId}&friendId={friendId}") // получить общие фильмы
+    public ResponseEntity<List<Film>> getListCommonFilms(@RequestParam("userId") Long userId,
+                                                 @RequestParam("friendId") Long friendId) {
+        List<Film> films = filmService.getListCommonFilms(userId, friendId);
+        return new ResponseEntity<>(films, HttpStatus.OK);
+    }
 }
