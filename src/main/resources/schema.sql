@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS friends
 (
     user_id   BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     friend_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    date      TIMESTAMP NOT NULL,
+    date      TIMESTAMP, --NOT NULL,
     CONSTRAINT friends_pk PRIMARY KEY (user_id, friend_id)
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS likes
 (
     user_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     film_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    date    TIMESTAMP NOT NULL,
+    date    TIMESTAMP, --NOT NULL,
     CONSTRAINT likes_pk PRIMARY KEY (user_id, film_id)
 );
 

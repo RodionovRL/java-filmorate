@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -17,13 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
     UserStorage userStorage;
+    FilmStorage filmStorage;
     UserService userService;
     User user;
 
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
+        userService = new UserService(userStorage, filmStorage);
 
         user = User.builder()
                 .id(Integer.MAX_VALUE)
