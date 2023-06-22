@@ -112,7 +112,7 @@ public class ReviewDbStorage implements ReviewStorage {
 			String deleteReviewByIdQuery = "DELETE FROM REVIEWS WHERE review_id = ?";
 			jdbcTemplate.update(deleteReviewByIdQuery, reviewId);
 		} else {
-			throw new ReviewNotFoundException(String.format("Attempt to delete review with " +
+			throw new ReviewNotFoundException(String.format("Попытка удалить отзыв с помощью " +
 					"absent id = %d", reviewId));
 		}
 	}
