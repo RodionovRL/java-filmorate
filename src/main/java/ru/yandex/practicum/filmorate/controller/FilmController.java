@@ -108,8 +108,8 @@ public class FilmController {
     }
 
     @GetMapping("/films/common?userId={userId}&friendId={friendId}") // получить общие фильмы
-    public ResponseEntity<List<Film>> getListCommonFilms(@RequestParam("userId") Long userId,
-                                                 @RequestParam("friendId") Long friendId) {
+    public ResponseEntity<List<Film>> getListCommonFilms(@PathVariable("userId") Long userId,
+                                                         @PathVariable("friendId") Long friendId) {
         log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);
         List<Film> films = filmService.getListCommonFilms(userId, friendId);
         return new ResponseEntity<>(films, HttpStatus.OK);
