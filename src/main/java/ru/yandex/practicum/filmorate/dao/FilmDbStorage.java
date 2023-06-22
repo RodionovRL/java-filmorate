@@ -250,7 +250,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILM " +
                 "WHERE ID IN (SELECT FILM_ID " +
                 "FROM LIKES " +
-                "WHERE USER_ID=1 OR USER_ID=2 " +
+                "WHERE USER_ID=? OR USER_ID=? " +
                 "GROUP BY FILM_ID  " +
                 "HAVING Count(FILM_ID) >1 " +
                 "ORDER BY count(USER_ID) DESC)";
