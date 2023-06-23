@@ -6,7 +6,6 @@ import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
