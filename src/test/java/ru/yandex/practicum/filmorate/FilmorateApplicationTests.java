@@ -73,7 +73,7 @@ class FilmorateApplicationTests {
                 "description1",
                 LocalDate.of(2001, 1, 1),
                 110,
-                null,
+                new HashSet<>(),
                 new Mpa(1, null),
                 new HashSet<>());
         film2 = new Film(2,
@@ -81,7 +81,7 @@ class FilmorateApplicationTests {
                 "description2",
                 LocalDate.of(2002, 2, 2),
                 111,
-                null,
+                new HashSet<>(),
                 new Mpa(2, null),
                 new HashSet<>());
         film3 = new Film(3,
@@ -89,7 +89,7 @@ class FilmorateApplicationTests {
                 "description3",
                 LocalDate.of(2003, 3, 3),
                 112,
-                null,
+                new HashSet<>(),
                 new Mpa(3, null),
                 new HashSet<>());
 
