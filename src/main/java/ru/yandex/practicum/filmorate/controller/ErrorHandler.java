@@ -55,4 +55,13 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse errorInsertToDbException(final IllegalArgumentException e) {
+        log.debug("IllegalArgumentException: " + e.getMessage());
+        return new ErrorResponse(
+                "IllegalArgumentException"
+        );
+    }
 }

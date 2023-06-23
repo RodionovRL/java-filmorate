@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,6 +61,10 @@ public class FilmService {
         userStorage.getUserById(userId);
         return filmStorage.delLikeFromFilm(filmId, userId);
 
+    }
+
+    public List<Film> searchFilm(String query, SearchBy by) {
+        return filmStorage.searchFilm(query, by);
     }
 
     public List<Film> getPopularFilms(int count) {

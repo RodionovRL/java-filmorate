@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -177,6 +178,41 @@ public class FilmDbStorage implements FilmStorage {
             throw new GenreNotFoundException(String.format(
                     "mpa с запрошенным id = %s не найден", id));
         }
+    }
+
+    @Override
+    public List<Film> searchFilm(String query, SearchBy by) {
+        String sqlQuery = "";
+        log.info("запрос в БД на возврат фильмов где {} содержат {}", by, query);
+        if (by.equals(SearchBy.TITLE_DIRECTOR) || by.equals(SearchBy.DIRECTOR_TITLE)) {
+            sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    "FROM FILM F " +
+                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                    "LEFT JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTOR D on D.ID = FD.DIRECTOR_ID " +
+                    "WHERE LCASE(F.NAME) LIKE LCASE(?) OR LCASE(D.NAME) LIKE LCASE(?)";
+            return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%", "%" + query + "%"));
+        }
+
+        if (by.equals(SearchBy.TITLE)) {
+            sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    "FROM FILM F " +
+                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                    "WHERE LCASE(F.NAME) LIKE LCASE(?)";
+        }
+        if (by.equals(SearchBy.DIRECTOR)) {
+            sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    "FROM FILM F " +
+                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                    "LEFT JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTOR D on D.ID = FD.DIRECTOR_ID " +
+                    "WHERE LCASE(D.NAME) LIKE LCASE(?)";
+
+        }
+        return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%"));
     }
 
     private void setGenreName(Film newFilm) {

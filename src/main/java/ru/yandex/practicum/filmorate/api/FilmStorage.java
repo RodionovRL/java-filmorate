@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.api;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,4 +31,6 @@ public interface FilmStorage {
     List<Mpa> getAllMpa();
 
     Mpa getMpaById(Integer id);
+
+    List<Film> searchFilm(String query, SearchBy by);
 }

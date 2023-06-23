@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -76,6 +77,16 @@ public class FilmController {
     ) {
         log.info("получен запрос на получение ТОП{} популярных фильмов", count);
         List<Film> films = filmService.getPopularFilms(count);
+        return new ResponseEntity<>(films, HttpStatus.OK);
+    }
+
+    @GetMapping("/films/search")
+    public ResponseEntity<List<Film>> findFilms (
+            @RequestParam(value = "query") String query,
+            @RequestParam(value = "by") SearchBy by
+            ) {
+        log.info("Запрос на поиск по строке {}, встречающейся в {}", query, by);
+        List<Film> films = filmService.searchFilm(query, by);
         return new ResponseEntity<>(films, HttpStatus.OK);
     }
 
