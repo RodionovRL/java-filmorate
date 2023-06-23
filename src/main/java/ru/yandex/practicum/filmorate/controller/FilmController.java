@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping()
 public class FilmController {
     private final FilmService filmService;
-    private final String PARAMS = "year, likes";
 
     @Autowired
     public FilmController(FilmService filmService) {
@@ -107,21 +106,6 @@ public class FilmController {
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
     }
-
-    /* TODO
-    *   add new endpoints:
-    *   1) POST /films:
-    *   {
-        "name": "New film",
-        "releaseDate": "1999-04-30",
-        "description": "New film about friends",
-        "duration": 120,
-        "mpa": { "id": 3},
-        "genres": [{ "id": 1}],
-        "director": [{ "id": 1}]
-    *   }
-    *   2) GET /films/director/{directorId}?sortBy=[year,likes]
-    * */
 
     @GetMapping("/films/director/{directorId}")
     public List<Film> getSortedFilms(@RequestParam(value = "sortBy", required = false) String param,
