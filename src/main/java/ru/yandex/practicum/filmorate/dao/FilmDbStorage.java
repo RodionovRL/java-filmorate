@@ -181,14 +181,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getFilmsByIds(Set<Long> filmIds) {
-//        Вариант 1
-//        List<Film> films = new ArrayList<>();
-//        for (long id : filmIds) {
-//            Film film = getFilmById(id);
-//            films.add(film);
-//        }
 
-//         Вариант 2
         String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
 
         List<Film> films = jdbcTemplate.query(

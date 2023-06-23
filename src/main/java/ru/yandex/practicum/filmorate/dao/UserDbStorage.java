@@ -135,7 +135,6 @@ public class UserDbStorage implements UserStorage {
                     maxIntersections = intersectSet.size();
                     recomendId = tempId;
                 }
-                ;
             }
         }
         if (recomendId != 0) {
@@ -143,7 +142,7 @@ public class UserDbStorage implements UserStorage {
             recomendFilmIds.removeAll(userLikes);
             return recomendFilmIds;
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     private Set<Long> getUserLikes(long id) {
