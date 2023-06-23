@@ -32,6 +32,6 @@ public interface FilmStorage {
 
     Mpa getMpaById(Integer id);
 
-    Collection<Film> getFilmsByIds(Set<Long> recommendFilmIds);
+    List<Film> getFilmsByIds(Set<Long> recommendFilmIds);
 
 }
