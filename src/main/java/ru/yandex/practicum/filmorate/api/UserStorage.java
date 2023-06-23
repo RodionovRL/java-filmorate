@@ -21,4 +21,5 @@ public interface UserStorage {
 
     boolean deleteFriend(Long id, Long exFriendId);
 
+    boolean deleteUserById(Long id);
 }

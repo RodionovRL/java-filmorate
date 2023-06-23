@@ -30,4 +30,6 @@ public interface FilmStorage {
     List<Mpa> getAllMpa();
 
     Mpa getMpaById(Integer id);
+
+    boolean deleteFilmById(Long id);
 }

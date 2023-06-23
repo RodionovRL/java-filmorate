@@ -94,6 +94,14 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+
+    @Override
+    public boolean deleteFilmById(Long id) {
+        String sqlQuery = "DELETE FROM FILM WHERE ID = ?";
+        log.info("удаляем фильм id={}", id);
+        return jdbcTemplate.update(sqlQuery, id) != 0;
+    }
+
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         UserDbStorage.checkUserIsExist(userId, jdbcTemplate);
@@ -128,7 +136,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILM F " +
                 "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
                 "LEFT JOIN LIKES L ON F.ID = L.FILM_ID " +
-                "GROUP BY F.NAME ORDER BY RATE DESC " +
+                "GROUP BY F.ID, F.NAME ORDER BY RATE DESC " +
                 "LIMIT ?";
 
         log.debug("возвращён ТОП-{} фильмов", count);

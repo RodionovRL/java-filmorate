@@ -81,4 +81,8 @@ public class FilmService {
     public Mpa getMpaById(Integer id) {
         return filmStorage.getMpaById(id);
     }
+
+    public boolean deleteFilmById(Long id) {
+        return filmStorage.deleteFilmById(id);
+    }
 }
