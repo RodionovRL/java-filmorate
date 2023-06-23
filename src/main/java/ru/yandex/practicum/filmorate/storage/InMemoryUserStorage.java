@@ -77,6 +77,11 @@ public class InMemoryUserStorage implements UserStorage {
         return user.delFriend(exFriendId);
     }
 
+    @Override
+    public Set<Long> getUserRecommendations(long id) {
+        return null;
+    }
+
     private void checkUserIsExist(Long id) {
         if (!users.containsKey(id)) {
             log.error("пользователь с запрошенным id {} не найден", id);

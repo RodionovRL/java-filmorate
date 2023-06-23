@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface FilmStorage {
     Film addFilm(Film film);
@@ -30,6 +31,9 @@ public interface FilmStorage {
     List<Mpa> getAllMpa();
 
     Mpa getMpaById(Integer id);
+
+    Collection<Film> getFilmsByIds(Set<Long> recommendFilmIds);
+
 
     boolean deleteFilmById(Long id);
 }

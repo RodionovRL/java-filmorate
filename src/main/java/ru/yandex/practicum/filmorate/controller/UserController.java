@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -99,5 +100,13 @@ public class UserController {
 
         List<User> commonFriends = userService.getCommonFriend(id, otherId);
         return new ResponseEntity<>(commonFriends, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public ResponseEntity<Collection<Film>> getUserRecommendations(@PathVariable("id") Long id) {
+        log.info("получен запрос рекомендаций для пользователя с id {}", id);
+        Collection<Film> films = userService.getUserRecommendations(id);
+        log.info("возвращены рекомендации для пользователя с id {}", id);
+        return new ResponseEntity<>(films, HttpStatus.OK);
     }
 }
