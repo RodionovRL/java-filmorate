@@ -63,6 +63,8 @@ public class Film {
         values.put("release_date", releaseDate);
         values.put("duration", duration);
         values.put("mpa_id", mpa.getId());
+        values.put("directors", directors);
+
         return values;
     }
 }
