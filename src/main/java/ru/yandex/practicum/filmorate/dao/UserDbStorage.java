@@ -13,8 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -117,6 +116,39 @@ public class UserDbStorage implements UserStorage {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Set<Long> getUserRecommendations(long id) {
+        checkUserIsExist(id, jdbcTemplate);
+        Collection<User> users = getAllUsers();
+        Set<Long> userLikes = getUserLikes(id);
+        int maxIntersections = 0;
+        long recomendId = 0;
+        long tempId;
+        for (User user : users) {
+            tempId = user.getId();
+            if (tempId != id) {
+                Set<Long> intersectSet = new HashSet<>(getUserLikes(tempId));
+                intersectSet.retainAll(userLikes);
+                if (intersectSet.size() > maxIntersections) {
+                    maxIntersections = intersectSet.size();
+                    recomendId = tempId;
+                }
+            }
+        }
+        if (recomendId != 0) {
+            Set<Long> recomendFilmIds = getUserLikes(recomendId);
+            recomendFilmIds.removeAll(userLikes);
+            return recomendFilmIds;
+        }
+        return Collections.emptySet();
+    }
+
+    private Set<Long> getUserLikes(long id) {
+        String sqlQuery = "SELECT FILM_ID FROM LIKES WHERE USER_ID = ?";
+        Set<Long> userLikes = new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class, id));
+        return userLikes;
     }
 
     private User userMapper(ResultSet resultSet, int rowNum) throws SQLException {

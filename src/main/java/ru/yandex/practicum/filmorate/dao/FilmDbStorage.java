@@ -179,6 +179,21 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    @Override
+    public Collection<Film> getFilmsByIds(Set<Long> filmIds) {
+
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+
+        List<Film> films = jdbcTemplate.query(
+                String.format("SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                        " F.MPA_ID,  M.NAME MPA_NAME " +
+                        "FROM FILM F LEFT JOIN MPA M ON F.MPA_ID = M.ID WHERE F.ID IN (%s) " +
+                        "ORDER BY F.ID", inSql), this::filmMapper,
+                filmIds.toArray());
+        return films;
+
+    }
+
     private void setGenreName(Film newFilm) {
         newFilm.setGenres(newFilm.getGenres().stream()
                 .map(g -> getGenreById(g.getId()))
