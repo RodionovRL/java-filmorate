@@ -67,6 +67,7 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(film);
         setGenreName(film);
         setFilmGenreInBd(film);
+        setFilmDirector(film);
 
         return Optional.of(film);
     }
@@ -192,8 +193,8 @@ public class FilmDbStorage implements FilmStorage {
                         "FROM FILM F LEFT JOIN MPA M ON F.MPA_ID = M.ID WHERE F.ID IN (%s) " +
                         "ORDER BY F.ID", inSql), this::filmMapper,
                 filmIds.toArray());
-        return films;
 
+        return films;
     }
 
     @Override
@@ -258,6 +259,7 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpa)
                 .genres(genres)
+                .directors(directors)
                 .build();
     }
 
