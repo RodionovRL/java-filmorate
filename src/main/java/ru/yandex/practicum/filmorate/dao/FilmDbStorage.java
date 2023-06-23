@@ -67,7 +67,6 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(film);
         setGenreName(film);
         setFilmGenreInBd(film);
-        setFilmDirector(film);
 
         return Optional.of(film);
     }
@@ -183,6 +182,21 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public Collection<Film> getFilmsByIds(Set<Long> filmIds) {
+
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+
+        List<Film> films = jdbcTemplate.query(
+                String.format("SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                        " F.MPA_ID,  M.NAME MPA_NAME " +
+                        "FROM FILM F LEFT JOIN MPA M ON F.MPA_ID = M.ID WHERE F.ID IN (%s) " +
+                        "ORDER BY F.ID", inSql), this::filmMapper,
+                filmIds.toArray());
+        return films;
+
+    }
+
+    @Override
     public List<Film> getFilmsByDirector(long directorId) {
         String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
                 " F.MPA_ID,  M.NAME MPA_NAME " +
@@ -244,7 +258,6 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpa)
                 .genres(genres)
-                .directors(directors)
                 .build();
     }
 

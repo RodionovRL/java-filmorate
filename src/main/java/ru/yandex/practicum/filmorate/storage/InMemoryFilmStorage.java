@@ -101,6 +101,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return null;
     }
 
+    @Override
+    public Collection<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return null;
+    }
+
     private void checkFilmIsContains(Long id) {
         if (!films.containsKey(id)) {
             log.error("updateFilm: фильм с id = {} не найден", id);
