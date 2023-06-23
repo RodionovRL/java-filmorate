@@ -18,26 +18,19 @@ import static java.util.Comparator.comparing;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
+    @JsonIgnore
+    private final Set<Long> likes = new HashSet<>();
     @EqualsAndHashCode.Exclude
-    @Positive
     private long id;
-
     @NotNull(message = "Не задано название фильма")
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
-
     @Size(max = 200, message = "Описание должно быть не более 200 символов")
     private String description;
-
     @AfterInternationCinemaDay(message = "Дата релиза не может быть ранее 28 декабря 1895!")
     private LocalDate releaseDate;
-
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
-
-    @JsonIgnore
-    private final Set<Long> likes = new HashSet<>();
-
     private Set<Director> directors;
 
     private Mpa mpa;

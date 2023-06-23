@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.DirectorStorage;
 import ru.yandex.practicum.filmorate.model.Director;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +21,14 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public List<Director> getAllDirectors() {
-        return jdbcTemplate.query("SELECT * FROM director", this::directorMapper);
+        return jdbcTemplate.query("SELECT * FROM director", Director::directorMapper);
     }
 
     @Override
     public Optional<Director> getDirectorById(int directorId) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM director WHERE id = ?",
-                    this::directorMapper, directorId));
+                    Director::directorMapper, directorId));
 
         } catch (RuntimeException e) {
             return Optional.empty();
@@ -71,12 +69,5 @@ public class DirectorDbStorage implements DirectorStorage {
         }
 
         return true;
-    }
-
-    private Director directorMapper(ResultSet rs, int rowNum) throws SQLException {
-        return Director.builder()
-                .id(rs.getInt("id"))
-                .name(rs.getString("name"))
-                .build();
     }
 }

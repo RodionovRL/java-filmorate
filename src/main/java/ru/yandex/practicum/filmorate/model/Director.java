@@ -7,6 +7,8 @@ import lombok.NonNull;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +17,17 @@ import java.util.Map;
 public class Director {
     @NotNull
     @NonNull
-    @Positive
     private int id;
 
-    @NonNull
     @NotBlank
     private String name;
+
+    public static Director directorMapper(ResultSet rs, int rowNum) throws SQLException {
+        return Director.builder()
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
+                .build();
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

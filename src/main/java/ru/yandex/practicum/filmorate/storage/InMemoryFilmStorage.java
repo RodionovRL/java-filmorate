@@ -96,6 +96,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new Mpa();
     }
 
+    @Override
+    public List<Film> getFilmsByDirector(long directorId) {
+        return null;
+    }
+
     private void checkFilmIsContains(Long id) {
         if (!films.containsKey(id)) {
             log.error("updateFilm: фильм с id = {} не найден", id);

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping()
 public class FilmController {
     private final FilmService filmService;
-
+    private final String PARAMS = "year, likes";
     @Autowired
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
@@ -121,4 +122,11 @@ public class FilmController {
     *   }
     *   2) GET /films/director/{directorId}?sortBy=[year,likes]
     * */
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getSortedFilms(@RequestParam(value = "sortBy", required = false) String param,
+                                                     @PathVariable long directorId) {
+
+        return filmService.getSortedFilms(param, directorId);
+    }
 }
