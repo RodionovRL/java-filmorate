@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -40,6 +41,7 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(newFilm);
         setGenreName(newFilm);
         setFilmGenreInBd(newFilm);
+        setFilmDirector(newFilm);
 
         return newFilm;
     }
@@ -65,6 +67,7 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(film);
         setGenreName(film);
         setFilmGenreInBd(film);
+        setFilmDirector(film);
 
         return Optional.of(film);
     }
@@ -198,7 +201,18 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY F.ID";
 
         return jdbcTemplate.query(String.format(sqlQuery, inSql), this::filmMapper, filmIds.toArray());
+    }
 
+    @Override
+    public List<Film> getFilmsByDirector(long directorId) {
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                " F.MPA_ID,  M.NAME MPA_NAME " +
+                "FROM FILM F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "INNER JOIN film_director fd on f.id = fd.FILM_ID " +
+                "WHERE fd.DIRECTOR_ID = ?";
+
+        return jdbcTemplate.query(sqlQuery, this::filmMapper, directorId);
     }
 
     private void setGenreName(Film newFilm) {
@@ -223,9 +237,26 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private void setFilmDirector(Film film) {
+        String sqlQuery = "DELETE FROM film_director WHERE film_id = ?";
+        jdbcTemplate.update(sqlQuery, film.getId());
+
+        if (Objects.isNull(film.getDirectors()) || film.getDirectors().size() == 0) {
+            return;
+        }
+
+        sqlQuery = "INSERT INTO FILM_DIRECTOR(FILM_ID, DIRECTOR_ID) VALUES ( ?, ? )";
+        for (Director director : film.getDirectors()) {
+            jdbcTemplate.update(sqlQuery, film.getId(), director.getId());
+        }
+
+    }
+
     private Film filmMapper(ResultSet resultSet, int rowNum) throws SQLException {
         Mpa mpa = new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name"));
         Set<Genre> genres = getFilmsGenre(resultSet.getLong("id"));
+        Set<Director> directors = getDirectors(resultSet.getLong("id"));
+
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name(resultSet.getString("name"))
@@ -234,6 +265,7 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpa)
                 .genres(genres)
+                .directors(directors)
                 .build();
     }
 
@@ -244,6 +276,15 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE FG.FILM_ID = ? " +
                 "ORDER BY ID";
         return new HashSet<>(jdbcTemplate.query(sqlQuery, this::genreMapper, id));
+    }
+
+    private Set<Director> getDirectors(long filmId) {
+        String sqlQuery = "SELECT fd.director_id id, d.name " +
+                "FROM film_director fd " +
+                "INNER JOIN director d ON fd.director_id = d.id " +
+                "WHERE fd.film_id = ? " +
+                "ORDER BY id";
+        return new HashSet<>(jdbcTemplate.query(sqlQuery, Director::directorMapper, filmId));
     }
 
     private Genre genreMapper(ResultSet resultSet, int rowNum) throws SQLException {
