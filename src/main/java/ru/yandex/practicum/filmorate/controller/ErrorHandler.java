@@ -58,7 +58,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse errorInsertToDbException(final IllegalArgumentException e) {
+    public ErrorResponse errorIllegalArgumentException(final IllegalArgumentException e) {
         log.debug("IllegalArgumentException: " + e.getMessage());
         return new ErrorResponse(
                 "IllegalArgumentException"
