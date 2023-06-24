@@ -180,11 +180,11 @@ public class FilmDbStorage implements FilmStorage {
                 "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
                 "FROM FILM F " +
                 "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                "GROUP BY F.ID " +
-                "ORDER BY RATE DESC " +
-                "LIMIT ? ";
-        log.debug("возвращён ТОП-{} фильмов, без параметров", count);
+                "LEFT JOIN LIKES L ON F.ID = L.FILM_ID " +
+                "GROUP BY F.ID, F.NAME ORDER BY RATE DESC " +
+                "LIMIT ?";
+
+        log.debug("возвращён ТОП-{} фильмов", count);
         return jdbcTemplate.query(sqlQuery, this::filmMapper, count);
     }
 

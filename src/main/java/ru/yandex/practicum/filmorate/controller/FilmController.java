@@ -81,11 +81,14 @@ public class FilmController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/films/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
-                                      @RequestParam(defaultValue = "-1") Integer genreId,
-                                      @RequestParam(defaultValue = "-1") Integer year) {
-        return filmService.getPopularFilms(count, genreId, year);
+    @GetMapping("/films/popular")
+    public ResponseEntity<List<Film>> getPopularFilms(
+            @RequestParam(value = "count", required = false, defaultValue = "10") Integer count
+    ) {
+        log.info("получен запрос на получение ТОП{} популярных фильмов", count);
+        log.info("получен запрос на получение ТОП{} популярных фильмов", count);
+        List<Film> films = filmService.getPopularFilms(count);
+        return new ResponseEntity<>(films, HttpStatus.OK);
     }
 
     @GetMapping("/genres")
