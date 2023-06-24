@@ -222,30 +222,42 @@ public class FilmDbStorage implements FilmStorage {
         log.info("запрос в БД на возврат фильмов где {} содержат {}", by, query);
         if (by.equals(SearchBy.TITLE_DIRECTOR) || by.equals(SearchBy.DIRECTOR_TITLE)) {
             sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
-                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    "F.MPA_ID,  M.NAME MPA_NAME, " +
+                    "COUNT(L.USER_ID) LiKES " +
                     "FROM FILM F " +
                     "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
                     "LEFT JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID " +
                     "LEFT JOIN DIRECTOR D on D.ID = FD.DIRECTOR_ID " +
-                    "WHERE LCASE(F.NAME) LIKE LCASE(?) OR LCASE(D.NAME) LIKE LCASE(?)";
+                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
+                    "WHERE LCASE(F.NAME) LIKE LCASE(?) OR LCASE(D.NAME) LIKE LCASE(?)" +
+                    "GROUP BY F.ID " +
+                    "ORDER BY LiKES DESC";
             return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%", "%" + query + "%"));
         }
 
         if (by.equals(SearchBy.TITLE)) {
             sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
-                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    " F.MPA_ID,  M.NAME MPA_NAME, " +
+                    "COUNT(L.USER_ID) LiKES  " +
                     "FROM FILM F " +
                     "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                    "WHERE LCASE(F.NAME) LIKE LCASE(?)";
+                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
+                    "WHERE LCASE(F.NAME) LIKE LCASE(?) " +
+                    "GROUP BY F.ID " +
+                    "ORDER BY LiKES DESC";
         }
         if (by.equals(SearchBy.DIRECTOR)) {
             sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
-                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    " F.MPA_ID,  M.NAME MPA_NAME, " +
+                    "COUNT(L.USER_ID) LiKES " +
                     "FROM FILM F " +
                     "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
                     "LEFT JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID " +
                     "LEFT JOIN DIRECTOR D on D.ID = FD.DIRECTOR_ID " +
-                    "WHERE LCASE(D.NAME) LIKE LCASE(?)";
+                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
+                    "WHERE LCASE(D.NAME) LIKE LCASE(?) "+
+                    "GROUP BY F.ID " +
+                    "ORDER BY LiKES DESC";
 
         }
         return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%"));
@@ -315,11 +327,11 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Set<Director> getDirectors(long filmId) {
-        String sqlQuery = "SELECT fd.director_id id, d.name " +
-                "FROM film_director fd " +
-                "INNER JOIN director d ON fd.director_id = d.id " +
-                "WHERE fd.film_id = ? " +
-                "ORDER BY id";
+        String sqlQuery = "SELECT FD.DIRECTOR_ID, D.NAME " +
+                "FROM FILM_DIRECTOR FD " +
+                "INNER JOIN DIRECTOR D ON FD.DIRECTOR_ID = D.ID " +
+                "WHERE FD.FILM_ID = ? " +
+                "ORDER BY ID";
         return new HashSet<>(jdbcTemplate.query(sqlQuery, Director::directorMapper, filmId));
     }
 
