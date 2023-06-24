@@ -66,7 +66,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopPopularFilms(int count) {
+    public List<Film> getTopPopularFilms(int count, int genreId, int year) {
         List<Film> topFilms = getAllFilms().stream()
                 .sorted(Film::compareByLikes)
                 .limit(count)
@@ -94,6 +94,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Mpa getMpaById(Integer id) {
         return new Mpa();
+    }
+
+    @Override
+    public List<Film> getFilmsByDirector(long directorId) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return new ArrayList<>();
     }
 
     private void checkFilmIsContains(Long id) {

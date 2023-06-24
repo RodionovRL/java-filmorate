@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.List;
 
@@ -70,13 +71,11 @@ public class FilmController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/films/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(
-            @RequestParam(value = "count", required = false, defaultValue = "10") Integer count
-    ) {
-        log.info("получен запрос на получение ТОП{} популярных фильмов", count);
-        List<Film> films = filmService.getPopularFilms(count);
-        return new ResponseEntity<>(films, HttpStatus.OK);
+    @GetMapping(value = "/films/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
+                                      @RequestParam(defaultValue = "-1") Integer genreId,
+                                      @RequestParam(defaultValue = "-1") Integer year) {
+        return filmService.getPopularFilms(count, genreId, year);
     }
 
     @GetMapping("/genres")
@@ -105,5 +104,18 @@ public class FilmController {
         log.info("получен запрос на получение mpa id={}", id);
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getSortedFilms(@RequestParam(value = "sortBy") String param,
+                                     @PathVariable @Positive long directorId) {
+
+        return filmService.getSortedFilms(param, directorId);
+    }
+
+    @GetMapping("/films/common")
+    public List<Film> getListCommonFilms(@RequestParam Long userId, Long friendId) {
+        log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);
+        return filmService.getListCommonFilms(userId, friendId);
     }
 }
