@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -124,7 +125,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getTopPopularFilms(int count) {
         String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
-                " F.MPA_ID,  M.NAME AS MPA_NAME,  COUNT(L.FILM_ID) RATE " +
+                " F.MPA_ID,  M.NAME MPA_NAME,  COUNT(L.FILM_ID) RATE " +
                 "FROM FILM F " +
                 "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
                 "LEFT JOIN LIKES L ON F.ID = L.FILM_ID " +
@@ -261,14 +262,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getListCommonFilms(Long userId, Long friendId) {
-        String sqlQuery = "SELECT * " +
-                "FROM FILM " +
-                "WHERE ID IN (SELECT FILM_ID " +
-                "FROM LIKES " +
-                "WHERE USER_ID=? OR USER_ID=? " +
-                "GROUP BY FILM_ID  " +
-                "HAVING Count(FILM_ID) >1 " +
-                "ORDER BY count(USER_ID) DESC)";
-        return jdbcTemplate.query(sqlQuery, this::filmMapper, userId, friendId);
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.MPA_ID, M.NAME MPA_NAME " +
+        "FROM FILM F " +
+        "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+        "WHERE F.ID IN (SELECT FILM_ID " +
+        "FROM LIKES " +
+        "WHERE USER_ID = ? " +
+        "OR USER_ID = ? " +
+        "GROUP BY FILM_ID " +
+        "HAVING Count(FILM_ID) >1 " +
+        "ORDER BY count(USER_ID) DESC) ";
+        return (jdbcTemplate.query(sqlQuery, this::filmMapper, userId, friendId));
+       // return (Collections.singletonList(jdbcTemplate.queryForObject(sqlQuery, this::filmMapper, userId, friendId)));
     }
 }

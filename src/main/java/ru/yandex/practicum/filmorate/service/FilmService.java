@@ -82,7 +82,7 @@ public class FilmService {
         return filmStorage.getMpaById(id);
     }
 
-    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+    public Collection<Film> getListCommonFilms(Long userId, Long friendId) {
         return  filmStorage.getListCommonFilms(userId, friendId);
     }
 }

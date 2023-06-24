@@ -34,6 +34,6 @@ public interface FilmStorage {
 
     Collection<Film> getFilmsByIds(Set<Long> recommendFilmIds);
 
-    List<Film> getListCommonFilms(Long userId, Long friendId);
+    Collection<Film> getListCommonFilms(Long userId, Long friendId);
 
 }
