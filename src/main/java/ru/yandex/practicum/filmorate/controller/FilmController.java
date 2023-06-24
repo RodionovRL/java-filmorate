@@ -55,16 +55,6 @@ public class FilmController {
         return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
-    @DeleteMapping("/films/{id}")
-    public ResponseEntity<Boolean> deleteFilmById(@PathVariable("id") Long id) {
-        log.info("получен запрос на на удаление фильма id={}", id);
-        boolean result = filmService.deleteFilmById(id);
-        if (!result) {
-            log.warn("Attempt to delete nonexistent film id={}", id);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @PutMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Boolean> setLikeToFilm(@PathVariable("id") Long id,
                                                  @PathVariable("userId") Long userId) {
@@ -81,13 +71,11 @@ public class FilmController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
     @GetMapping(value = "/films/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
                                       @RequestParam(defaultValue = "-1") Integer genreId,
                                       @RequestParam(defaultValue = "-1") Integer year) {
-        List<Film> films = filmService.getPopularFilms(count, genreId, year);
-        return new ResponseEntity<>(films, HttpStatus.OK);
+        return filmService.getPopularFilms(count, genreId, year);
     }
 
     @GetMapping("/genres")
@@ -124,7 +112,7 @@ public class FilmController {
 
         return filmService.getSortedFilms(param, directorId);
     }
-      
+
     @GetMapping("/films/common")
     public List<Film> getListCommonFilms(@RequestParam Long userId, Long friendId) {
         log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);

@@ -46,12 +46,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean deleteFilmById(Long id) {
-        log.info("удаляем фильм id={}", id);
-        return films.remove(id) != null;
-    }
-
-    @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         if (film.addLike(userId)) {

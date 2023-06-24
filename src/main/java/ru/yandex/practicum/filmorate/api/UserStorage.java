@@ -23,6 +23,4 @@ public interface UserStorage {
     boolean deleteFriend(Long id, Long exFriendId);
 
     Set<Long> getUserRecommendations(long id);
-
-    boolean deleteUserById(Long id);
 }
