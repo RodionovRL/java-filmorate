@@ -120,5 +120,4 @@ public class FilmController {
         log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);
         return filmService.getListCommonFilms(userId, friendId);
     }
-
 }
