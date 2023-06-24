@@ -47,10 +47,6 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public boolean deleteUserById(Long id) {
-        return userStorage.deleteUserById(id);
-    }
-
     public boolean addFriend(Long id, Long friendId) {
         if (userStorage.addFriend(id, friendId)) {
             log.info("Пользователь id={} добавил в друзья пользователя id={}", id, friendId);
@@ -102,4 +98,6 @@ public class UserService {
             user.setName(user.getLogin());
         }
     }
+
+
 }

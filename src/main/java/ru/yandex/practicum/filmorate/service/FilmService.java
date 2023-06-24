@@ -86,10 +86,6 @@ public class FilmService {
         return filmStorage.getMpaById(id);
     }
 
-    public boolean deleteFilmById(Long id) {
-        return filmStorage.deleteFilmById(id);
-    }
-
     public List<Film> getSortedFilms(String param, long directorId) {
         List<Film> films = new ArrayList<>();
 
@@ -108,5 +104,9 @@ public class FilmService {
         }
 
         return films;
+    }
+
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return filmStorage.getListCommonFilms(userId, friendId);
     }
 }

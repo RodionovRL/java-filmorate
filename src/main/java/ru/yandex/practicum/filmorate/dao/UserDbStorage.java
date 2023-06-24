@@ -87,13 +87,6 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean deleteUserById(Long id) {
-        String sqlQuery = "DELETE FROM USERS WHERE ID = ?";
-        log.info("удаляем пользователя id={}", id);
-        return jdbcTemplate.update(sqlQuery, id) != 0;
-    }
-
-    @Override
     public boolean addFriend(Long id, Long friendId) {
         if (id.equals(friendId)) {
             log.error("Нельзя добавить себя в друзья id=friendId={}", id);

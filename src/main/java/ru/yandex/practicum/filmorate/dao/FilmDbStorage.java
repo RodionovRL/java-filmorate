@@ -97,14 +97,6 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-
-    @Override
-    public boolean deleteFilmById(Long id) {
-        String sqlQuery = "DELETE FROM FILM WHERE ID = ?";
-        log.info("удаляем фильм id={}", id);
-        return jdbcTemplate.update(sqlQuery, id) != 0;
-    }
-
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         UserDbStorage.checkUserIsExist(userId, jdbcTemplate);
@@ -347,5 +339,20 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
+    }
+
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.MPA_ID, M.NAME MPA_NAME " +
+                "FROM FILM F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "WHERE F.ID IN (SELECT FILM_ID " +
+                "FROM LIKES " +
+                "WHERE USER_ID = ? " +
+                "OR USER_ID = ? " +
+                "GROUP BY FILM_ID " +
+                "HAVING Count(FILM_ID) >1 " +
+                "ORDER BY count(USER_ID) DESC) ";
+        return (jdbcTemplate.query(sqlQuery, this::filmMapper, userId, friendId));
     }
 }
