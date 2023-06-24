@@ -98,6 +98,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return null;
+    }
+
+    @Override
     public List<Film> searchFilm(String query, SearchBy by) {
         return new ArrayList<>();
     }

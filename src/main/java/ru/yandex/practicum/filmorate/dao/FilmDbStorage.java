@@ -181,6 +181,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getFilmsByIds(Set<Long> filmIds) {
+
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                " F.MPA_ID,  M.NAME MPA_NAME " +
+                "FROM FILM F LEFT JOIN MPA M ON F.MPA_ID = M.ID WHERE F.ID IN (%s) " +
+                "ORDER BY F.ID";
+
+        return jdbcTemplate.query(String.format(sqlQuery, inSql), this::filmMapper, filmIds.toArray());
+
+    }
+
+    @Override
     public List<Film> searchFilm(String query, SearchBy by) {
         String sqlQuery = "";
         log.info("запрос в БД на возврат фильмов где {} содержат {}", by, query);
