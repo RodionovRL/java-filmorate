@@ -34,6 +34,5 @@ public interface FilmStorage {
 
     List<Film> getFilmsByIds(Set<Long> recommendFilmIds);
 
-
     boolean deleteFilmById(Long id);
 }
