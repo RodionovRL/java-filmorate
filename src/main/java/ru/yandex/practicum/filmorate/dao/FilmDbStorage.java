@@ -327,7 +327,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Set<Director> getDirectors(long filmId) {
-        String sqlQuery = "SELECT FD.DIRECTOR_ID, D.NAME " +
+        String sqlQuery = "SELECT FD.DIRECTOR_ID ID, D.NAME " +
                 "FROM FILM_DIRECTOR FD " +
                 "INNER JOIN DIRECTOR D ON FD.DIRECTOR_ID = D.ID " +
                 "WHERE FD.FILM_ID = ? " +

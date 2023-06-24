@@ -93,10 +93,10 @@ public class FilmController {
     }
 
     @GetMapping("/films/search")
-    public ResponseEntity<List<Film>> findFilms (
+    public ResponseEntity<List<Film>> findFilms(
             @RequestParam(value = "query") String query,
             @RequestParam(value = "by") SearchBy by
-            ) {
+    ) {
         log.info("Запрос на поиск по строке {}, встречающейся в {}", query, by);
         List<Film> films = filmService.searchFilm(query, by);
         return new ResponseEntity<>(films, HttpStatus.OK);
