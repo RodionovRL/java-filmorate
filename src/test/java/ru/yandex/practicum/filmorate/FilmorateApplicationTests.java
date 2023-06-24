@@ -232,7 +232,7 @@ class FilmorateApplicationTests {
         requiredTop2afterAdd.add(film3);
         requiredTop2afterAdd.add(film1);
 
-        List<Film> top2 = filmStorage.getTopPopularFilms(2,0,0) ;
+        List<Film> top2 = filmStorage.getTopPopularFilms(2,0,0);
 
         assertArrayEquals(requiredTop2afterAdd.toArray(), top2.toArray());
 
