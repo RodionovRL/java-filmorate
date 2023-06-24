@@ -26,6 +26,17 @@ public class UserDbStorage implements UserStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
+        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
+        try {
+            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("пользователь с запрошенным id {} не найден", id);
+            throw new UserNotFoundException(String.format(
+                    "пользователь с запрошенным id = %s не найден", id));
+        }
+    }
+
     @Override
     public User addUser(User newUser) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -73,6 +84,13 @@ public class UserDbStorage implements UserStorage {
             throw new UserNotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
+    }
+
+    @Override
+    public boolean deleteUserById(Long id) {
+        String sqlQuery = "DELETE FROM USERS WHERE ID = ?";
+        log.info("удаляем пользователя id={}", id);
+        return jdbcTemplate.update(sqlQuery, id) != 0;
     }
 
     @Override
@@ -159,16 +177,5 @@ public class UserDbStorage implements UserStorage {
                 .login(resultSet.getString("login"))
                 .birthday(resultSet.getDate("birthday"))
                 .build();
-    }
-
-    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
-        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        try {
-            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
-                    "пользователь с запрошенным id = %s не найден", id));
-        }
     }
 }

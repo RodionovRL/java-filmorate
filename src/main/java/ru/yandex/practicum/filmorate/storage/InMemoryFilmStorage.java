@@ -47,6 +47,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public boolean deleteFilmById(Long id) {
+        log.info("удаляем фильм id={}", id);
+        return films.remove(id) != null;
+    }
+
+    @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         if (film.addLike(userId)) {
@@ -98,8 +104,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getFilmsByDirector(long directorId) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

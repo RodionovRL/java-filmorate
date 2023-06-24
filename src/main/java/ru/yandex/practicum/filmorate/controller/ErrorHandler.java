@@ -64,4 +64,12 @@ public class ErrorHandler {
                 "IllegalArgumentException"
         );
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notFoundException(final NotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
 }

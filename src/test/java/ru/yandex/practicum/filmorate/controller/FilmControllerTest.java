@@ -51,7 +51,8 @@ public class FilmControllerTest {
                 LocalDate.of(1895, 12, 27),
                 -1,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +83,8 @@ public class FilmControllerTest {
                 LocalDate.now(),
                 120,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)

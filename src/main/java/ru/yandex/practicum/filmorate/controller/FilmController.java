@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,6 +56,16 @@ public class FilmController {
         return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
+    @DeleteMapping("/films/{id}")
+    public ResponseEntity<Boolean> deleteFilmById(@PathVariable("id") Long id) {
+        log.info("получен запрос на на удаление фильма id={}", id);
+        boolean result = filmService.deleteFilmById(id);
+        if (!result) {
+            log.warn("Attempt to delete nonexistent film id={}", id);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @PutMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Boolean> setLikeToFilm(@PathVariable("id") Long id,
                                                  @PathVariable("userId") Long userId) {
@@ -75,6 +86,7 @@ public class FilmController {
     public ResponseEntity<List<Film>> getPopularFilms(
             @RequestParam(value = "count", required = false, defaultValue = "10") Integer count
     ) {
+        log.info("получен запрос на получение ТОП{} популярных фильмов", count);
         log.info("получен запрос на получение ТОП{} популярных фильмов", count);
         List<Film> films = filmService.getPopularFilms(count);
         return new ResponseEntity<>(films, HttpStatus.OK);
@@ -116,5 +128,12 @@ public class FilmController {
         log.info("получен запрос на получение mpa id={}", id);
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getSortedFilms(@RequestParam(value = "sortBy") String param,
+                                     @PathVariable @Positive long directorId) {
+
+        return filmService.getSortedFilms(param, directorId);
     }
 }
