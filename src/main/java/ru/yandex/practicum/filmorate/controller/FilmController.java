@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.List;
 
@@ -105,6 +106,13 @@ public class FilmController {
         log.info("получен запрос на получение mpa id={}", id);
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getSortedFilms(@RequestParam(value = "sortBy") String param,
+                                     @PathVariable @Positive long directorId) {
+
+        return filmService.getSortedFilms(param, directorId);
     }
 
     @GetMapping("/films/common")

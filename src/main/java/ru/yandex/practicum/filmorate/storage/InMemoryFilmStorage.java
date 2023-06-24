@@ -97,13 +97,18 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+    public List<Film> getFilmsByDirector(long directorId) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Collection<Film> getListCommonFilms(Long userId, Long friendId) {
         return null;
     }
 
     @Override
-    public List<Film> getListCommonFilms(Long userId, Long friendId) {
-        return null;
+    public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return new ArrayList<>();
     }
 
     private void checkFilmIsContains(Long id) {
