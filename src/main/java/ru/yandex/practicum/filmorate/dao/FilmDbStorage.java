@@ -255,7 +255,7 @@ public class FilmDbStorage implements FilmStorage {
                     "LEFT JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID " +
                     "LEFT JOIN DIRECTOR D on D.ID = FD.DIRECTOR_ID " +
                     "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                    "WHERE LCASE(D.NAME) LIKE LCASE(?) "+
+                    "WHERE LCASE(D.NAME) LIKE LCASE(?) " +
                     "GROUP BY F.ID " +
                     "ORDER BY LiKES DESC";
 
