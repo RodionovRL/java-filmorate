@@ -34,4 +34,5 @@ public interface FilmStorage {
 
     List<Film> getFilmsByIds(Set<Long> recommendFilmIds);
 
+    List<Film> getFilmsByDirector(long directorId);
 }

@@ -21,21 +21,18 @@ import java.util.*;
 @AllArgsConstructor
 public class User {
 
+    @JsonIgnore
+    private final Set<Long> friendsIds = new HashSet<>();
     private long id;
     @Email(message = "Необходимо ввести email адрес")
     private String email;
-
     @NotNull(message = "Необходимо ввести логин")
     @NotBlank(message = "Логин не должен быть пустым")
     private String login;
-
     private String name;
-
     @NotNull(message = "Необходимо задать дату рождения")
     @Past(message = "Пользователь ещё не родился?")
     private Date birthday;
-    @JsonIgnore
-    private final Set<Long> friendsIds = new HashSet<>();
 
     public boolean addFriend(Long id) {
         if (friendsIds.add(id)) {
