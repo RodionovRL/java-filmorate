@@ -106,4 +106,10 @@ public class FilmController {
         Mpa mpa = filmService.getMpaById(id);
         return new ResponseEntity<>(mpa, HttpStatus.OK);
     }
+
+    @GetMapping("/films/common")
+    public List<Film> getListCommonFilms(@RequestParam Long userId, Long friendId) {
+        log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);
+        return filmService.getListCommonFilms(userId, friendId);
+    }
 }
