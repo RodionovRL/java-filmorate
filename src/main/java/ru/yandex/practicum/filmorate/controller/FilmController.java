@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.List;
 
@@ -108,8 +109,8 @@ public class FilmController {
     }
 
     @GetMapping("/films/director/{directorId}")
-    public List<Film> getSortedFilms(@RequestParam(value = "sortBy", required = false) String param,
-                                     @PathVariable long directorId) {
+    public List<Film> getSortedFilms(@RequestParam(value = "sortBy") String param,
+                                     @PathVariable @Positive long directorId) {
 
         return filmService.getSortedFilms(param, directorId);
     }

@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -26,13 +27,7 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director getDirectorById(@PathVariable int id) {
-        if (id < 0) {
-            log.warn("negative id provided");
-
-            throw new RuntimeException("id is negative. expected positive");
-        }
-
+    public Director getDirectorById(@PathVariable @Positive int id) {
         log.info("GET: /directors/{}", id);
 
         return service.getDirectorById(id);
