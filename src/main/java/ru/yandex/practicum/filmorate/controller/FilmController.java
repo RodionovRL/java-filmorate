@@ -59,6 +59,9 @@ public class FilmController {
     public ResponseEntity<Boolean> deleteFilmById(@PathVariable("id") Long id) {
         log.info("получен запрос на на удаление фильма id={}", id);
         boolean result = filmService.deleteFilmById(id);
+        if (!result) {
+            log.warn("Attempt to delete nonexistent film id={}", id);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
