@@ -66,8 +66,8 @@ public class FilmService {
 
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getTopPopularFilms(count);
+    public List<Film> getPopularFilms(int count, int genreId, int year) {
+        return filmStorage.getTopPopularFilms(count, genreId, year);
     }
 
     public List<Genre> getAllGenres() {
@@ -84,6 +84,10 @@ public class FilmService {
 
     public Mpa getMpaById(Integer id) {
         return filmStorage.getMpaById(id);
+    }
+
+    public boolean deleteFilmById(Long id) {
+        return filmStorage.deleteFilmById(id);
     }
 
     public List<Film> getSortedFilms(String param, long directorId) {
@@ -104,9 +108,5 @@ public class FilmService {
         }
 
         return films;
-    }
-
-    public Collection<Film> getListCommonFilms(Long userId, Long friendId) {
-        return filmStorage.getListCommonFilms(userId, friendId);
     }
 }
