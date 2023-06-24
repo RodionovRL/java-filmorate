@@ -56,6 +56,16 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable("id") Long id) {
+        log.info("получен запрос на на удаление пользователя с id= {}", id);
+        boolean result = userService.deleteUserById(id);
+        if (!result) {
+            log.warn("Attempt to delete nonexistent user id={}", id);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public ResponseEntity<Boolean> addNewFriend(@PathVariable("id") Long id,
                                                 @PathVariable("friendId") Long friendId
