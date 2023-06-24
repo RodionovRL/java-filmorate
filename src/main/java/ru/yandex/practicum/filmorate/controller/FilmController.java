@@ -107,11 +107,9 @@ public class FilmController {
         return new ResponseEntity<>(mpa, HttpStatus.OK);
     }
 
-    @GetMapping("/films/common?userId={userId}&friendId={friendId}") // получить общие фильмы
-    public ResponseEntity<List<Film>> getListCommonFilms(@PathVariable("userId") Long userId,
-                                                         @PathVariable("friendId") Long friendId) {
+    @GetMapping("/films/common")
+    public List<Film> getListCommonFilms(@RequestParam Long userId, Long friendId) {
         log.info("получен запрос на получение списка общих фильмов пользователя id={} и id={}", userId, friendId);
-        List<Film> films = filmService.getListCommonFilms(userId, friendId);
-        return new ResponseEntity<>(films, HttpStatus.OK);
+        return filmService.getListCommonFilms(userId, friendId);
     }
 }
