@@ -72,7 +72,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopPopularFilms(int count) {
+    public List<Film> getTopPopularFilms(int count, int genreId, int year) {
         List<Film> topFilms = getAllFilms().stream()
                 .sorted(Film::compareByLikes)
                 .limit(count)
