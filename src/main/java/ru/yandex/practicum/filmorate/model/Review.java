@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,19 +12,25 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Review {
-	private Long reviewId;
-	@NotNull
+
+	@EqualsAndHashCode.Exclude
+	private long reviewId;
+
 	@NotBlank
 	private String content;
+
 	@NotNull
+	@JsonProperty("isPositive")
 	private Boolean isPositive;
+
 	@NotNull
 	private Long userId;
+
 	@NotNull
 	private Long filmId;
-	private Long useful;
+
+	private int useful;
 
 	public Map<String, Object> toMap() {
 		Map<String, Object> values = new HashMap<>();

@@ -246,7 +246,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public boolean isFilmExists(Long id) {
-        String sql = "SELECT * FROM FILMS WHERE film_id = ?";
+        String sql = "SELECT * FROM FILM WHERE id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
         return userRows.next();
     }

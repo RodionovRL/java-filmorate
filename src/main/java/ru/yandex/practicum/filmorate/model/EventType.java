@@ -1,10 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-@JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum EventType {
-	LIKE,
-	REVIEW,
-	FRIEND
+	LIKE("LIKE"),
+	FRIEND("FRIEND"),
+	REVIEW("REVIEW"),
+	;
+	private final String title;
+
+	EventType(String title) {
+		this.title = title;
+	}
+
+	public String getTitle() {
+		return title;
+	}
 }
