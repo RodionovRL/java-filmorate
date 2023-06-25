@@ -145,7 +145,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY F.ID, FG.GENRE_ID " +
                     "ORDER BY RATE DESC " +
                     "LIMIT ? ";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по жанру-{}", count, genreId);
+            log.debug("возвращён ТОП-{} фильмов, жанра-{}", count, genreId);
             return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, count);
         }
         if (genreId == -1 && year > 0) {
@@ -158,7 +158,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY F.ID " +
                     "ORDER BY RATE DESC " +
                     "LIMIT ? ";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по году-{}", count, year);
+            log.debug("возвращён ТОП-{} фильмов {} года", count, year);
             return jdbcTemplate.query(sqlQuery, this::filmMapper,year, count);
         }
         if (genreId > 0 && year > 0) {
@@ -173,7 +173,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY F.ID,  FG.GENRE_ID " +
                     "ORDER BY RATE DESC " +
                     "LIMIT ?";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по году-{} и жанру-{}", count, year,genreId);
+            log.debug("возвращён ТОП-{} фильмов, жанра-{}, {} года", count, genreId, year);
             return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, year, count);
         }
         String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
