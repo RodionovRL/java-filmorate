@@ -7,7 +7,6 @@ import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Map;
 
 @Value
