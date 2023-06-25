@@ -245,9 +245,4 @@ public class FilmDbStorage implements FilmStorage {
         film.setMpa(mpa);
     }
 
-    public boolean isFilmExists(Long id) {
-        String sql = "SELECT * FROM FILMS WHERE film_id = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
-        return userRows.next();
-    }
 }

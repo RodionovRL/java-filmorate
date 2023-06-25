@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public class ReviewNotFoundException extends RuntimeException {
-	public ReviewNotFoundException(String message) {
-		super(message);
-	}
+	 @Getter
+	private String message;
 }
