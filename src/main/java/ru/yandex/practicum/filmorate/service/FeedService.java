@@ -23,32 +23,24 @@ public class FeedService {
         return addEvent(userId, filmId, EventType.LIKE, Operation.REMOVE);
     }
 
-    public Event userUpdateLike(long userId, long filmId) {
-        return addEvent(userId, filmId, EventType.LIKE, Operation.UPDATE);
-    }
-
     public Event userAddReview(long userId, long reviewId) {
         return addEvent(userId, reviewId, EventType.REVIEW, Operation.ADD);
     }
 
-    public Event userRemoveReview(long userId, long reviewId) {
-        return addEvent(userId, reviewId, EventType.REVIEW, Operation.REMOVE);
+    public Event userRemoveReview(long reviewId) {
+        return addEvent(eventStorage.userIdByReviewId(reviewId), reviewId, EventType.REVIEW, Operation.REMOVE);
     }
 
     public Event userUpdateReview(long userId, long reviewId) {
         return addEvent(userId, reviewId, EventType.REVIEW, Operation.UPDATE);
     }
 
-    public Event useAddFriend(long userId, long friendId) {
+    public Event userAddFriend(long userId, long friendId) {
         return addEvent(userId, friendId, EventType.FRIEND, Operation.ADD);
     }
 
-    public Event useRemoveFriend(long userId, long friendId) {
+    public Event userRemoveFriend(long userId, long friendId) {
         return addEvent(userId, friendId, EventType.FRIEND, Operation.REMOVE);
-    }
-
-    public Event useUpdateFriend(long userId, long friendId) {
-        return addEvent(userId, friendId, EventType.FRIEND, Operation.UPDATE);
     }
 
     public List<Event> getFeedById(long userId) {
@@ -61,7 +53,7 @@ public class FeedService {
                 .entityId(entityId)
                 .eventType(eventType)
                 .operation(operation)
-                .date(Instant.now())
+                .timestamp(Instant.now().toEpochMilli())
                 .build());
     }
 }

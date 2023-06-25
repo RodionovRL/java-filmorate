@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.model.event;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Setter;
 import lombok.Value;
-import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Map;
 
@@ -24,14 +23,13 @@ public class Event {
     EventType eventType;
     Operation operation;
     @NonFinal
-    Instant date;
+    long timestamp;
 
     public Map<String, Object> toMap() {
-        return Map.of("date", date,
+        return Map.of("creation_date", new Timestamp(timestamp),
                 "user_id", userId,
                 "event_type", eventType.ordinal() + 1,
                 "operation", operation.ordinal() + 1,
                 "entity_id", entityId);
     }
-
 }

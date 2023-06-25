@@ -8,4 +8,6 @@ public interface EventStorage {
     Event addEvent(Event event);
 
     List<Event> getLastEvents(long userId);
+
+    int userIdByReviewId(Long reviewId);
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 
 import javax.validation.Valid;
@@ -17,27 +18,34 @@ import java.util.Optional;
 @Validated
 public class ReviewController {
     private final ReviewService reviewService;
+    private final FeedService feedService;
 
     @Autowired
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, FeedService feedService) {
         this.reviewService = reviewService;
+        this.feedService = feedService;
     }
 
     @PostMapping("/reviews")
     public Review addReview(@Valid @RequestBody Review review) {
         log.info("User {} added", review.getContent());
-        return reviewService.addReview(review);
+        review = reviewService.addReview(review);
+        feedService.userAddReview(review.getUserId(), review.getReviewId());
+        return review;
     }
 
     @PutMapping("/reviews")
     public Review changeReview(@RequestBody Review review) {
-        log.info("Review {} was changed", review.getReviewId());
-        return reviewService.changeReview(review);
+        log.info("Review = {} was changed userId = {}", review.getReviewId(), review.getUserId());
+        Review changedReview = reviewService.changeReview(review);
+        feedService.userUpdateReview(changedReview.getUserId(), changedReview.getReviewId());
+        return changedReview;
     }
 
     @DeleteMapping("/reviews/{id}")
     public void deleteReview(@PathVariable long id) {
         log.info("Review {} was deleted", id);
+        feedService.userRemoveReview(id);
         reviewService.deleteReview(id);
     }
 
