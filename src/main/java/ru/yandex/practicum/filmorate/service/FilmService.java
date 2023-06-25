@@ -67,6 +67,8 @@ public class FilmService {
 
     }
 
+    public List<Film> getPopularFilms(int count, int genreId, int year) {
+        return filmStorage.getTopPopularFilms(count, genreId, year);
     public List<Film> searchFilm(String query, SearchBy by) {
         return filmStorage.searchFilm(query, by);
     }
