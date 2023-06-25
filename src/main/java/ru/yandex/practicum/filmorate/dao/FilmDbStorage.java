@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -43,6 +42,7 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(newFilm);
         setGenreName(newFilm);
         setFilmGenreInBd(newFilm);
+        setFilmDirector(newFilm);
 
         return newFilm;
     }
@@ -68,6 +68,7 @@ public class FilmDbStorage implements FilmStorage {
         setMpaName(film);
         setGenreName(film);
         setFilmGenreInBd(film);
+        setFilmDirector(film);
 
         return Optional.of(film);
     }
@@ -350,6 +351,7 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpa)
                 .genres(genres)
+                .directors(directors)
                 .build();
     }
 
