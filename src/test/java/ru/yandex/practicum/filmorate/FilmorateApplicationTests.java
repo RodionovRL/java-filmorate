@@ -71,21 +71,24 @@ class FilmorateApplicationTests {
                 LocalDate.of(2001, 1, 1),
                 110,
                 new HashSet<>(),
-                new Mpa(1, null));
+                new Mpa(1, null),
+                new HashSet<>());
         film2 = new Film(2,
                 "film2",
                 "description2",
                 LocalDate.of(2002, 2, 2),
                 111,
                 new HashSet<>(),
-                new Mpa(2, null));
+                new Mpa(2, null),
+                new HashSet<>());
         film3 = new Film(3,
                 "film3",
                 "description3",
                 LocalDate.of(2003, 3, 3),
                 112,
                 new HashSet<>(),
-                new Mpa(3, null));
+                new Mpa(3, null),
+                new HashSet<>());
 
         mpa = new ArrayList<>();
         mpa.add(new Mpa(1, "G"));
@@ -227,7 +230,7 @@ class FilmorateApplicationTests {
         requiredTop2afterAdd.add(film3);
         requiredTop2afterAdd.add(film1);
 
-        List<Film> top2 = filmStorage.getTopPopularFilms(2);
+        List<Film> top2 = filmStorage.getTopPopularFilms(2,0,0);
 
         assertArrayEquals(requiredTop2afterAdd.toArray(), top2.toArray());
 
@@ -240,7 +243,7 @@ class FilmorateApplicationTests {
         requiredTop2afterDel.add(film1);
         requiredTop2afterDel.add(film3);
 
-        top2 = filmStorage.getTopPopularFilms(2);
+        top2 = filmStorage.getTopPopularFilms(2,0,0);
 
         assertArrayEquals(requiredTop2afterDel.toArray(), top2.toArray());
     }

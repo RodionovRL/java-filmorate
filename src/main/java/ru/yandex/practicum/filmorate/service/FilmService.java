@@ -6,12 +6,17 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,11 +64,14 @@ public class FilmService {
     public boolean delLikeFromFilm(Long filmId, Long userId) {
         userStorage.getUserById(userId);
         return filmStorage.delLikeFromFilm(filmId, userId);
-
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getTopPopularFilms(count);
+    public List<Film> getPopularFilms(int count, int genreId, int year) {
+        return filmStorage.getTopPopularFilms(count, genreId, year);
+    }
+
+    public List<Film> searchFilm(String query, SearchBy by) {
+        return filmStorage.searchFilm(query, by);
     }
 
     public List<Genre> getAllGenres() {
@@ -80,5 +88,33 @@ public class FilmService {
 
     public Mpa getMpaById(Integer id) {
         return filmStorage.getMpaById(id);
+    }
+
+    public boolean deleteFilmById(Long id) {
+        return filmStorage.deleteFilmById(id);
+    }
+
+    public List<Film> getSortedFilms(String param, long directorId) {
+        List<Film> films = new ArrayList<>();
+
+        if (param.equals("year")) {
+            films = filmStorage.getFilmsByDirector(directorId).stream()
+                    .sorted(Comparator.comparing(Film::getReleaseDate))
+                    .collect(Collectors.toList());
+        } else if (param.equals("likes")) {
+            films = filmStorage.getFilmsByDirector(directorId).stream()
+                    .sorted(Comparator.comparingInt(o -> o.getLikes().size()))
+                    .collect(Collectors.toList());
+        }
+
+        if (films.isEmpty()) {
+            throw new NotFoundException("wrong director_id");
+        }
+
+        return films;
+    }
+
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return filmStorage.getListCommonFilms(userId, friendId);
     }
 }

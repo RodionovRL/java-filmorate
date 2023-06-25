@@ -13,8 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -25,6 +24,17 @@ public class UserDbStorage implements UserStorage {
 
     UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
+        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
+        try {
+            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("пользователь с запрошенным id {} не найден", id);
+            throw new UserNotFoundException(String.format(
+                    "пользователь с запрошенным id = %s не найден", id));
+        }
     }
 
     @Override
@@ -77,6 +87,13 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public boolean deleteUserById(Long id) {
+        String sqlQuery = "DELETE FROM USERS WHERE ID = ?";
+        log.info("удаляем пользователя id={}", id);
+        return jdbcTemplate.update(sqlQuery, id) != 0;
+    }
+
+    @Override
     public boolean addFriend(Long id, Long friendId) {
         if (id.equals(friendId)) {
             log.error("Нельзя добавить себя в друзья id=friendId={}", id);
@@ -119,6 +136,39 @@ public class UserDbStorage implements UserStorage {
         return true;
     }
 
+    @Override
+    public Set<Long> getUserRecommendations(long id) {
+        checkUserIsExist(id, jdbcTemplate);
+        Collection<User> users = getAllUsers();
+        Set<Long> userLikes = getUserLikes(id);
+        int maxIntersections = 0;
+        long recomendId = 0;
+        long tempId;
+        for (User user : users) {
+            tempId = user.getId();
+            if (tempId != id) {
+                Set<Long> intersectSet = new HashSet<>(getUserLikes(tempId));
+                intersectSet.retainAll(userLikes);
+                if (intersectSet.size() > maxIntersections) {
+                    maxIntersections = intersectSet.size();
+                    recomendId = tempId;
+                }
+            }
+        }
+        if (recomendId != 0) {
+            Set<Long> recomendFilmIds = getUserLikes(recomendId);
+            recomendFilmIds.removeAll(userLikes);
+            return recomendFilmIds;
+        }
+        return Collections.emptySet();
+    }
+
+    private Set<Long> getUserLikes(long id) {
+        String sqlQuery = "SELECT FILM_ID FROM LIKES WHERE USER_ID = ?";
+        Set<Long> userLikes = new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class, id));
+        return userLikes;
+    }
+
     private User userMapper(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
                 .id(resultSet.getLong("id"))
@@ -127,16 +177,5 @@ public class UserDbStorage implements UserStorage {
                 .login(resultSet.getString("login"))
                 .birthday(resultSet.getDate("birthday"))
                 .build();
-    }
-
-    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
-        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        try {
-            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
-                    "пользователь с запрошенным id = %s не найден", id));
-        }
     }
 }
