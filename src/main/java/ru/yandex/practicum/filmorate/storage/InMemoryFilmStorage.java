@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -109,6 +110,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchFilm(String query, SearchBy by) {
         return new ArrayList<>();
     }
 
