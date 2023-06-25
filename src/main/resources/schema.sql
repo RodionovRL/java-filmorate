@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS film
 CREATE TABLE IF NOT EXISTS likes
 (
     user_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    film_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    film_id BIGINT    NOT NULL REFERENCES film (id) ON DELETE CASCADE,
     date    TIMESTAMP, --NOT NULL,
     CONSTRAINT likes_pk PRIMARY KEY (user_id, film_id)
 );
@@ -99,4 +99,4 @@ CREATE TABLE IF NOT EXISTS events
     event_type INTEGER NOT NULL REFERENCES event_type (id) ON DELETE RESTRICT,
     operation  INTEGER NOT NULL REFERENCES operation_type (id) ON DELETE RESTRICT,
     entity_id  BIGINT
-)
+);
