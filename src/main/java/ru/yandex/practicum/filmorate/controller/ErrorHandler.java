@@ -55,4 +55,11 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleReviewNotFoundException(final ReviewNotFoundException e) {
+        log.debug("handleReviewNotFoundException: " + e.getMessage());
+        return  new ErrorResponse(
+                e.getMessage());
+    }
 }

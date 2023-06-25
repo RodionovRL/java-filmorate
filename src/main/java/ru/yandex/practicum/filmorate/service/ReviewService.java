@@ -41,7 +41,7 @@ public class ReviewService {
 	public Review changeReview(Review review) {
 		reviewStorage.changeReview(review);
 		Review result = reviewStorage.getReviewById(review.getReviewId());
-		return review;
+		return result;
 	}
 
 	public void deleteReview(long id) {
