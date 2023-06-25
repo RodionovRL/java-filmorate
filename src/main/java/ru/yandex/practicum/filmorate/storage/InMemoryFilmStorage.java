@@ -118,6 +118,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>();
     }
 
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return new ArrayList<>();
+    }
+
     private void checkFilmIsContains(Long id) {
         if (!films.containsKey(id)) {
             log.error("updateFilm: фильм с id = {} не найден", id);

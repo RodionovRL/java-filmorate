@@ -396,4 +396,19 @@ public class FilmDbStorage implements FilmStorage {
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
     }
+
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.MPA_ID, M.NAME MPA_NAME " +
+                "FROM FILM F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "WHERE F.ID IN (SELECT FILM_ID " +
+                "FROM LIKES " +
+                "WHERE USER_ID = ? " +
+                "OR USER_ID = ? " +
+                "GROUP BY FILM_ID " +
+                "HAVING Count(FILM_ID) >1 " +
+                "ORDER BY count(USER_ID) DESC) ";
+        return (jdbcTemplate.query(sqlQuery, this::filmMapper, userId, friendId));
+    }
 }
