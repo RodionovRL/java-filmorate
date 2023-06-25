@@ -22,7 +22,7 @@ public interface FilmStorage {
 
     boolean delLikeFromFilm(Long filmId, Long userId);
 
-    List<Film> getTopPopularFilms(int count);
+    List<Film> getTopPopularFilms(int count, int genreId, int year);
 
     List<Genre> getAllGenres();
 
@@ -37,4 +37,6 @@ public interface FilmStorage {
     List<Film> getFilmsByDirector(long directorId);
 
     boolean deleteFilmById(Long id);
+
+    List<Film> getListCommonFilms(Long userId, Long friendId);
 }
