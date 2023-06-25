@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Review;
@@ -27,19 +29,19 @@ public class ReviewController {
     }
 
     @PostMapping("/reviews")
-    public Review addReview(@Valid @RequestBody Review review) {
+    public ResponseEntity<Review> addReview(@Valid @RequestBody Review review) {
         log.info("User {} added", review.getContent());
         review = reviewService.addReview(review);
         feedService.userAddReview(review.getUserId(), review.getReviewId());
-        return review;
+        return new ResponseEntity<>(review, HttpStatus.CREATED);
     }
 
     @PutMapping("/reviews")
-    public Review changeReview(@RequestBody Review review) {
+    public ResponseEntity<Review> changeReview(@RequestBody Review review) {
         log.info("Review = {} was changed userId = {}", review.getReviewId(), review.getUserId());
         Review changedReview = reviewService.changeReview(review);
         feedService.userUpdateReview(changedReview.getUserId(), changedReview.getReviewId());
-        return changedReview;
+        return new ResponseEntity<>(changedReview, HttpStatus.OK);
     }
 
     @DeleteMapping("/reviews/{id}")
@@ -50,16 +52,16 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews/{id}")
-    public Review getReviewById(@PathVariable long id) {
+    public ResponseEntity<Review> getReviewById(@PathVariable long id) {
         log.info("Get review {}", id);
-        return reviewService.getReviewById(id);
+        return new ResponseEntity<>(reviewService.getReviewById(id), HttpStatus.OK);
     }
 
     @GetMapping("/reviews")
-    public List<Review> getReviewByFilmId(@RequestParam(required = false) Optional<Long> filmId,
-                                          @RequestParam(defaultValue = "10") int count) {
+    public ResponseEntity<List<Review>> getReviewByFilmId(@RequestParam(required = false) Optional<Long> filmId,
+                                                          @RequestParam(defaultValue = "10") int count) {
         log.info("Get reviews {} count", count);
-        return reviewService.getReviewByFilmId(filmId, count);
+        return new ResponseEntity<>(reviewService.getReviewByFilmId(filmId, count), HttpStatus.OK);
     }
 
     @PutMapping("/reviews/{id}/like/{userId}")
