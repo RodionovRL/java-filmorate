@@ -100,7 +100,6 @@ CREATE TABLE IF NOT EXISTS events
     operation  INTEGER NOT NULL REFERENCES operation_type (id) ON DELETE RESTRICT,
     entity_id  BIGINT
 );
-
 CREATE TABLE IF NOT EXISTS review_likes
 (
     id INTEGER REFERENCES review ON DELETE CASCADE,
