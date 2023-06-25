@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +47,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public boolean deleteFilmById(Long id) {
+        log.info("удаляем фильм id={}", id);
+        return films.remove(id) != null;
+    }
+
+    @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         if (film.addLike(userId)) {
@@ -66,7 +73,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopPopularFilms(int count) {
+    public List<Film> getTopPopularFilms(int count, int genreId, int year) {
         List<Film> topFilms = getAllFilms().stream()
                 .sorted(Film::compareByLikes)
                 .limit(count)
@@ -94,6 +101,26 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Mpa getMpaById(Integer id) {
         return new Mpa();
+    }
+
+    @Override
+    public List<Film> getFilmsByDirector(long directorId) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchFilm(String query, SearchBy by) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return new ArrayList<>();
     }
 
     private void checkFilmIsContains(Long id) {

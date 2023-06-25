@@ -70,7 +70,8 @@ class FilmServiceTest {
                 filmForUpdateReleaseDate,
                 filmForUpdateDuration,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         filmService.updateFilm(filmForUpdate);
 
@@ -101,35 +102,40 @@ class FilmServiceTest {
                 LocalDate.of(2001, 1, 1),
                 110,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film2 = new Film(1,
                 "film2",
                 "description2",
                 LocalDate.of(2001, 1, 2),
                 120,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film3 = new Film(1,
                 "film3",
                 "description3",
                 LocalDate.of(2001, 1, 3),
                 130,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film4 = new Film(1,
                 "film4",
                 "description4",
                 LocalDate.of(2001, 1, 4),
                 140,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film5 = new Film(1,
                 "film5",
                 "description5",
                 LocalDate.of(2001, 1, 5),
                 150,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         List<Film> testFilms = new ArrayList<>();
 
