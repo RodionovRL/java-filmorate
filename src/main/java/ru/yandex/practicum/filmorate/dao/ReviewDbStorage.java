@@ -77,7 +77,8 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public void addLike(long id, long userId, boolean isLike) {
-        String sql = "MERGE INTO review_likes (id, user_id, is_like) KEY (id, user_id) VALUES ( ?, ?, ? )";
+        String sql = "MERGE INTO review_likes (id, user_id, is_like) " +
+                "KEY (id, user_id) VALUES ( ?, ?, ? )";
         jdbcTemplate.update(sql, id, userId, isLike);
         updateUseful(id);
     }
