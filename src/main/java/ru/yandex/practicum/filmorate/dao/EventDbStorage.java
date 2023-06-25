@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.EventStorage;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.EventType;
 import ru.yandex.practicum.filmorate.model.event.Operation;
@@ -33,19 +34,38 @@ public class EventDbStorage implements EventStorage {
 
     @Override
     public List<Event> getLastEvents(long userId) {
-        String sqlQuery = "SELECT e.ID AS eventID,\n" +
-                "       e.USER_ID AS userId,\n" +
-                "       e.ENTITY_ID AS entityId,\n" +
-                "       e.\"DATE\"  AS \"date\",\n" +
-                "       ot.NAME AS operation,\n" +
-                "       et.NAME AS eventType\n" +
-                "FROM EVENTS AS e \n" +
-                "LEFT JOIN OPERATION_TYPE AS ot ON e.OPERATION=ot.ID\n" +
-                "LEFT JOIN EVENT_TYPE AS et ON e.EVENT_TYPE=et.ID\n" +
-                "WHERE e.ID=?\n" +
+        if (!isUserExist(userId)) {
+            throw new UserNotFoundException(
+                    String.format("Попытка получить фид несуществующего пользователя с id=%d", userId)
+            );
+        }
+        String sqlQuery = "SELECT e.ID AS eventID," +
+                "       e.USER_ID AS userId," +
+                "       e.ENTITY_ID AS entityId," +
+                "       e.\"DATE\"  AS \"date\"," +
+                "       ot.NAME AS operation," +
+                "       et.NAME AS eventType" +
+                "FROM EVENTS AS e " +
+                "LEFT JOIN OPERATION_TYPE AS ot ON e.OPERATION=ot.ID" +
+                "LEFT JOIN EVENT_TYPE AS et ON e.EVENT_TYPE=et.ID" +
+                "WHERE e.ID=?" +
                 "ORDER BY e.\"DATE\" DESC ";
-
         return jdbcTemplate.query(sqlQuery, this::makeEvent);
+    }
+
+    private boolean isUserExist(Long userId) {
+        if ( userId < 1) {
+            return false;
+        }
+        String sqlQuery = "SELECT " +
+                "EXISTS (SELECT id" +
+                "        FROM USERS " +
+                "        WHERE id=1)";
+        return Boolean.TRUE.equals(
+                jdbcTemplate.queryForObject(sqlQuery,
+                (rs, rowNum) -> rs.getBoolean(rs.getMetaData().getColumnName(1)),
+                userId)
+        );
     }
 
     private Event makeEvent(ResultSet rs, int rowNum) throws SQLException {
