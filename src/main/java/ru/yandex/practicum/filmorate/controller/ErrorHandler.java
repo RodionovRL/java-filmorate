@@ -55,4 +55,21 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse errorIllegalArgumentException(final IllegalArgumentException e) {
+        log.debug("IllegalArgumentException: " + e.getMessage());
+        return new ErrorResponse(
+                "IllegalArgumentException"
+        );
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notFoundException(final NotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
 }

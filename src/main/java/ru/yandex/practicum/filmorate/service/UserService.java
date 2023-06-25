@@ -3,12 +3,15 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -16,10 +19,12 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(UserStorage userStorage, FilmStorage filmStorage) {
         this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
     }
 
     public User addUser(User newUser) {
@@ -40,6 +45,10 @@ public class UserService {
     public Collection<User> getAllUsers() {
         log.info("переданы все {} пользователей", userStorage.getAllUsers().size());
         return userStorage.getAllUsers();
+    }
+
+    public boolean deleteUserById(Long id) {
+        return userStorage.deleteUserById(id);
     }
 
     public boolean addFriend(Long id, Long friendId) {
@@ -77,6 +86,14 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public Collection<Film> getUserRecommendations(long id) {
+        Set<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
+        log.info("Получены id рекомендованных фильмов для пользователя с id={}", id);
+        Collection<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
+        log.info("Возвращены рекомендации фильмов для пользователя с id={}", id);
+        return recommendFilms;
     }
 
     private void checkName(@NotNull User user) {

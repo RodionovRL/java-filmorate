@@ -43,6 +43,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public boolean deleteUserById(Long id) {
+        getUsersFriends(id).forEach(f -> f.delFriend(id));
+        return users.remove(id) != null;
+    }
+
+    @Override
     public List<User> getUsersFriends(Long id) {
         User user = getUserById(id);
         if (user.getFriendsIds() == null) {
@@ -69,6 +75,11 @@ public class InMemoryUserStorage implements UserStorage {
         checkUserIsExist(exFriendId);
 
         return user.delFriend(exFriendId);
+    }
+
+    @Override
+    public Set<Long> getUserRecommendations(long id) {
+        return new HashSet<>();
     }
 
     private void checkUserIsExist(Long id) {
