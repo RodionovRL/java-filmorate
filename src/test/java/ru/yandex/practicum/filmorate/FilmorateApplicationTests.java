@@ -9,10 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.dao.FilmDbStorage;
 import ru.yandex.practicum.filmorate.dao.UserDbStorage;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -107,6 +104,7 @@ class FilmorateApplicationTests {
         genres.add(new Genre(4, "Триллер"));
         genres.add(new Genre(5, "Документальный"));
         genres.add(new Genre(6, "Боевик"));
+
     }
 
     @Test
