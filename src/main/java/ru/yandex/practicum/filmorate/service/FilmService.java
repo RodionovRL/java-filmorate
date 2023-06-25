@@ -66,8 +66,8 @@ public class FilmService {
 
     }
 
-    public List<Film> getPopularFilms(int count, int genreId, int year) {
-        return filmStorage.getTopPopularFilms(count, genreId, year);
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getTopPopularFilms(count);
     }
 
     public List<Genre> getAllGenres() {
@@ -108,5 +108,9 @@ public class FilmService {
         }
 
         return films;
+    }
+
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        return filmStorage.getListCommonFilms(userId, friendId);
     }
 }

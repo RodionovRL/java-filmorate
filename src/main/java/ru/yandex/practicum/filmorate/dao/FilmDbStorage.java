@@ -133,58 +133,16 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopPopularFilms(int count, int genreId, int year) {
-        if (genreId > 0 && year == -1) {
-            String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
-                    "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
-                    "FROM FILM F " +
-                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                    "LEFT JOIN FILM_GENRE FG on F.ID = FG.FILM_ID " +
-                    "WHERE FG.GENRE_ID = ? " +
-                    "GROUP BY F.ID, FG.GENRE_ID " +
-                    "ORDER BY RATE DESC " +
-                    "LIMIT ? ";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по жанру-{}", count, genreId);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, count);
-        }
-        if (genreId == -1 && year > 0) {
-            String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
-                    "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
-                    "FROM FILM F " +
-                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                    "WHERE EXTRACT(YEAR FROM RELEASE_DATE) = ? " +
-                    "GROUP BY F.ID " +
-                    "ORDER BY RATE DESC " +
-                    "LIMIT ? ";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по году-{}", count, year);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,year, count);
-        }
-        if (genreId > 0 && year > 0) {
-            String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
-                    "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
-                    "FROM FILM F " +
-                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                    "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                    "LEFT JOIN FILM_GENRE FG on F.ID = FG.FILM_ID " +
-                    "WHERE FG.GENRE_ID = ? " +
-                    "AND EXTRACT(YEAR FROM RELEASE_DATE) = ? " +
-                    "GROUP BY F.ID,  FG.GENRE_ID " +
-                    "ORDER BY RATE DESC " +
-                    "LIMIT ?";
-            log.debug("возвращён ТОП-{} фильмов, сортировка по году-{} и жанру-{}", count, year,genreId);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, year, count);
-        }
-        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
-                "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
+    public List<Film> getTopPopularFilms(int count) {
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                " F.MPA_ID,  M.NAME AS MPA_NAME,  COUNT(L.FILM_ID) RATE " +
                 "FROM FILM F " +
                 "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                "LEFT JOIN LIKES L on F.ID = L.FILM_ID " +
-                "GROUP BY F.ID " +
-                "ORDER BY RATE DESC " +
-                "LIMIT ? ";
-        log.debug("возвращён ТОП-{} фильмов, без параметров", count);
+                "LEFT JOIN LIKES L ON F.ID = L.FILM_ID " +
+                "GROUP BY F.ID, F.NAME ORDER BY RATE DESC " +
+                "LIMIT ?";
+
+        log.debug("возвращён ТОП-{} фильмов", count);
         return jdbcTemplate.query(sqlQuery, this::filmMapper, count);
     }
 
@@ -347,5 +305,20 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
         Mpa mpa = getMpaById(mpaId);
         film.setMpa(mpa);
+    }
+
+    @Override
+    public List<Film> getListCommonFilms(Long userId, Long friendId) {
+        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.MPA_ID, M.NAME MPA_NAME " +
+                "FROM FILM F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "WHERE F.ID IN (SELECT FILM_ID " +
+                "FROM LIKES " +
+                "WHERE USER_ID = ? " +
+                "OR USER_ID = ? " +
+                "GROUP BY FILM_ID " +
+                "HAVING Count(FILM_ID) >1 " +
+                "ORDER BY count(USER_ID) DESC) ";
+        return (jdbcTemplate.query(sqlQuery, this::filmMapper, userId, friendId));
     }
 }
