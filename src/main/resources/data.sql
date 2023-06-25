@@ -15,11 +15,11 @@ VALUES (1, 'Комедия'),
        (6, 'Боевик');
 --создание типов событий
 INSERT INTO EVENT_TYPE
-VALUES (1, "LIKE"),
-       (2, "REVIEW"),
-       (3, "FRIEND");
+VALUES (1, 'LIKE'),
+       (2, 'REVIEW'),
+       (3, 'FRIEND');
 --создание операций
 INSERT INTO OPERATION_TYPE
-VALUES (1, "REMOVE"),
-       (2, "ADD"),
-       (3, "UPDATE");
+VALUES (1, 'REMOVE'),
+       (2, 'ADD'),
+       (3, 'UPDATE');
