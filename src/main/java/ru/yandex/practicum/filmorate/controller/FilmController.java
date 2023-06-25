@@ -82,10 +82,11 @@ public class FilmController {
     }
 
     @GetMapping(value = "/films/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
+    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
                                       @RequestParam(defaultValue = "-1") Integer genreId,
                                       @RequestParam(defaultValue = "-1") Integer year) {
-        return filmService.getPopularFilms(count, genreId, year);
+        List<Film> films = filmService.getPopularFilms(count, genreId, year);
+        return new ResponseEntity<>(films, HttpStatus.OK);
     }
 
     @GetMapping("/genres")
