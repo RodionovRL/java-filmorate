@@ -147,7 +147,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY RATE DESC " +
                     "LIMIT ? ";
             log.debug("возвращён ТОП-{} фильмов, жанра-{}", count, genreId);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, count);
+            return jdbcTemplate.query(sqlQuery, this::filmMapper, genreId, count);
         }
         if (genreId == -1 && year > 0) {
             String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
@@ -160,7 +160,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY RATE DESC " +
                     "LIMIT ? ";
             log.debug("возвращён ТОП-{} фильмов {} года", count, year);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,year, count);
+            return jdbcTemplate.query(sqlQuery, this::filmMapper, year, count);
         }
         if (genreId > 0 && year > 0) {
             String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
@@ -175,7 +175,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY RATE DESC " +
                     "LIMIT ?";
             log.debug("возвращён ТОП-{} фильмов, жанра-{}, {} года", count, genreId, year);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper,genreId, year, count);
+            return jdbcTemplate.query(sqlQuery, this::filmMapper, genreId, year, count);
         }
         String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
                 "F.DURATION, F.MPA_ID, M.NAME AS MPA_NAME, COUNT(L.USER_ID) RATE " +
@@ -275,9 +275,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY F.ID " +
                     "ORDER BY LiKES DESC";
             return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%", "%" + query + "%"));
-        }
-
-        if (by.equals(SearchBy.TITLE)) {
+        } else if (by.equals(SearchBy.TITLE)) {
             sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
                     " F.MPA_ID,  M.NAME MPA_NAME, " +
                     "COUNT(L.USER_ID) LiKES  " +
@@ -287,8 +285,7 @@ public class FilmDbStorage implements FilmStorage {
                     "WHERE LCASE(F.NAME) LIKE LCASE(?) " +
                     "GROUP BY F.ID " +
                     "ORDER BY LiKES DESC";
-        }
-        if (by.equals(SearchBy.DIRECTOR)) {
+        } else if (by.equals(SearchBy.DIRECTOR)) {
             sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
                     " F.MPA_ID,  M.NAME MPA_NAME, " +
                     "COUNT(L.USER_ID) LiKES " +
@@ -300,7 +297,6 @@ public class FilmDbStorage implements FilmStorage {
                     "WHERE LCASE(D.NAME) LIKE LCASE(?) " +
                     "GROUP BY F.ID " +
                     "ORDER BY LiKES DESC";
-
         }
         return (jdbcTemplate.query(sqlQuery, this::filmMapper, "%" + query + "%"));
     }
