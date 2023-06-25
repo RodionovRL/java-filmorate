@@ -64,17 +64,14 @@ public class FilmService {
     public boolean delLikeFromFilm(Long filmId, Long userId) {
         userStorage.getUserById(userId);
         return filmStorage.delLikeFromFilm(filmId, userId);
-
     }
 
     public List<Film> getPopularFilms(int count, int genreId, int year) {
         return filmStorage.getTopPopularFilms(count, genreId, year);
-    public List<Film> searchFilm(String query, SearchBy by) {
-        return filmStorage.searchFilm(query, by);
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getTopPopularFilms(count);
+    public List<Film> searchFilm(String query, SearchBy by) {
+        return filmStorage.searchFilm(query, by);
     }
 
     public List<Genre> getAllGenres() {
