@@ -116,10 +116,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}/recommendations")
-    public ResponseEntity<Collection<Film>> getUserRecommendations(@PathVariable("id") Long id) {
+    public ResponseEntity<List<Film>> getUserRecommendations(@PathVariable("id") Long id) {
         log.info("получен запрос рекомендаций для пользователя с id {}", id);
-        Collection<Film> films = userService.getUserRecommendations(id);
-        log.info("возвращены рекомендации для пользователя с id {}", id);
+        List<Film> films = userService.getUserRecommendations(id);
+        log.info("возвращено {} рекомендаций для пользователя с id {}", films.size(), id);
         return new ResponseEntity<>(films, HttpStatus.OK);
     }
 

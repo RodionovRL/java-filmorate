@@ -137,36 +137,32 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Set<Long> getUserRecommendations(long id) {
+    public List<Long> getUserRecommendations(long id) {
         checkUserIsExist(id, jdbcTemplate);
-        Collection<User> users = getAllUsers();
-        Set<Long> userLikes = getUserLikes(id);
-        int maxIntersections = 0;
-        long recomendId = 0;
-        long tempId;
-        for (User user : users) {
-            tempId = user.getId();
-            if (tempId != id) {
-                Set<Long> intersectSet = new HashSet<>(getUserLikes(tempId));
-                intersectSet.retainAll(userLikes);
-                if (intersectSet.size() > maxIntersections) {
-                    maxIntersections = intersectSet.size();
-                    recomendId = tempId;
-                }
-            }
-        }
-        if (recomendId != 0) {
-            Set<Long> recomendFilmIds = getUserLikes(recomendId);
-            recomendFilmIds.removeAll(userLikes);
-            return recomendFilmIds;
-        }
-        return Collections.emptySet();
-    }
 
-    private Set<Long> getUserLikes(long id) {
-        String sqlQuery = "SELECT FILM_ID FROM LIKES WHERE USER_ID = ?";
-        Set<Long> userLikes = new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class, id));
-        return userLikes;
+        String sqlQuery1 = "SELECT OL.USER_ID FROM LIKES UL " +
+                "LEFT JOIN LIKES OL ON UL.FILM_ID = OL.FILM_ID AND UL.USER_ID != OL.USER_ID " +
+                "WHERE UL.USER_ID = ? " +
+                "GROUP BY OL.USER_ID " +
+                "ORDER BY COUNT (OL.FILM_ID) DESC " +
+                "LIMIT 1";
+
+        Long recomendId = null;
+        try {
+            recomendId = jdbcTemplate.queryForObject(sqlQuery1, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.info("Пользователь с похожими вкусами для пользователя id={} не найден", id);
+        }
+
+        if (recomendId != null) {
+            String sqlQuery2 = "SELECT OL.FILM_ID FROM LIKES OL " +
+                    "WHERE OL.USER_ID = ? AND OL.FILM_ID NOT IN (" +
+                    "SELECT UL.FILM_ID FROM LIKES UL " +
+                    "WHERE UL.USER_ID = ?)";
+
+            return jdbcTemplate.queryForList(sqlQuery2, Long.class, recomendId, id);
+        }
+        return Collections.emptyList();
     }
 
     private User userMapper(ResultSet resultSet, int rowNum) throws SQLException {
