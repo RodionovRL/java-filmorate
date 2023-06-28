@@ -35,7 +35,7 @@ public interface FilmStorage {
 
     List<Film> getFilmsByIds(Set<Long> recommendFilmIds);
 
-    List<Film> getFilmsByDirector(long directorId);
+    List<Film> getFilmsByDirector(long directorId, String param);
 
     boolean deleteFilmById(Long id);
 

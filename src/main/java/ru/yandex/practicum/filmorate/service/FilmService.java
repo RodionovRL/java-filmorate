@@ -95,17 +95,7 @@ public class FilmService {
     }
 
     public List<Film> getSortedFilms(String param, long directorId) {
-        List<Film> films = new ArrayList<>();
-
-        if (param.equals("year")) {
-            films = filmStorage.getFilmsByDirector(directorId).stream()
-                    .sorted(Comparator.comparing(Film::getReleaseDate))
-                    .collect(Collectors.toList());
-        } else if (param.equals("likes")) {
-            films = filmStorage.getFilmsByDirector(directorId).stream()
-                    .sorted(Comparator.comparingInt(o -> o.getLikes().size()))
-                    .collect(Collectors.toList());
-        }
+        List<Film> films = filmStorage.getFilmsByDirector(directorId, param);
 
         if (films.isEmpty()) {
             throw new NotFoundException("wrong director_id");
