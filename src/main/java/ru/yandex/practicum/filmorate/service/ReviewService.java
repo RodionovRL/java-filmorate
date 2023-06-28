@@ -28,13 +28,11 @@ public class ReviewService {
     }
 
     public Review addReview(Review review) {
-        if (isFilmExist(review.getFilmId()) && userStorage.getUserById(review.getUserId()) != null) {
-            long id = reviewStorage.addReview(review);
-            review.setReviewId(id);
-            return review;
-        } else {
-            throw new NotFoundException("wrong user_id or film_id");
-        }
+        userStorage.getUserById(review.getUserId());
+        filmStorage.getFilmById(review.getFilmId());
+        long id = reviewStorage.addReview(review);
+        review.setReviewId(id);
+        return review;
     }
 
     public Review changeReview(Review review) {
