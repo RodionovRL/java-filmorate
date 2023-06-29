@@ -11,11 +11,8 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.util.SearchBy;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -94,17 +91,7 @@ public class FilmService {
     }
 
     public List<Film> getSortedFilms(String param, long directorId) {
-        List<Film> films = new ArrayList<>();
-
-        if (param.equals("year")) {
-            films = filmStorage.getFilmsByDirector(directorId).stream()
-                    .sorted(Comparator.comparing(Film::getReleaseDate))
-                    .collect(Collectors.toList());
-        } else if (param.equals("likes")) {
-            films = filmStorage.getFilmsByDirector(directorId).stream()
-                    .sorted(Comparator.comparingInt(o -> o.getLikes().size()))
-                    .collect(Collectors.toList());
-        }
+        List<Film> films = filmStorage.getFilmsByDirector(directorId, param);
 
         if (films.isEmpty()) {
             throw new NotFoundException("wrong director_id");
