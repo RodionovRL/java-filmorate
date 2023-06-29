@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -87,11 +86,11 @@ public class UserService {
         return false;
     }
 
-    public Collection<Film> getUserRecommendations(long id) {
-        Set<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
-        log.info("Получены id рекомендованных фильмов для пользователя с id={}", id);
-        Collection<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
-        log.info("Возвращены рекомендации фильмов для пользователя с id={}", id);
+    public List<Film> getUserRecommendations(long id) {
+        List<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
+        log.info("Получены id ({} шт.)  рекомендованных фильмов для пользователя с id={}", recommendFilmIds.size(), id);
+        List<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
+        log.info("Возвращено {} рекомендаций для пользователя с id {}", recommendFilms.size(), id);
         return recommendFilms;
     }
 
