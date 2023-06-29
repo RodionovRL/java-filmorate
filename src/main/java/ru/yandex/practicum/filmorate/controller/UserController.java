@@ -118,7 +118,7 @@ public class UserController {
     public ResponseEntity<List<Event>> getUserFeed(@PathVariable("id") Long id) {
         log.info("Запрос ленты событий пользователя с id {}", id);
         List<Event> feed = userService.getFeedById(id);
-        log.info("возвращена лента событий для пользователя с id {}", id);
+        log.info("возвращена лента из {} событий для пользователя с id {}",feed.size(), id);
         return new ResponseEntity<>(feed, HttpStatus.OK);
     }
 }
