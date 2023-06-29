@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.event.Event;
-import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -21,12 +20,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final FeedService feedService;
 
     @Autowired
-    UserController(UserService userService, FeedService feedService) {
+    UserController(UserService userService) {
         this.userService = userService;
-        this.feedService = feedService;
     }
 
     @PostMapping
@@ -77,9 +74,6 @@ public class UserController {
         log.info("получен запрос на добавление пользователю id={} друга id={}", id, friendId);
 
         boolean result = userService.addFriend(id, friendId);
-        if (result) {
-            feedService.userAddFriend(id, friendId);
-        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -90,9 +84,6 @@ public class UserController {
         log.info("получен запрос на разрыв дружбы пользователей с id {} и id {}", friendId, id);
 
         boolean result = userService.deleteUsersFriend(id, friendId);
-        if (result) {
-            feedService.userRemoveFriend(id, friendId);
-        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -126,7 +117,7 @@ public class UserController {
     @GetMapping("/{id}/feed")
     public ResponseEntity<List<Event>> getUserFeed(@PathVariable("id") Long id) {
         log.info("Запрос ленты событий пользователя с id {}", id);
-        List<Event> feed = feedService.getFeedById(id);
+        List<Event> feed = userService.getFeedById(id);
         log.info("возвращена лента событий для пользователя с id {}", id);
         return new ResponseEntity<>(feed, HttpStatus.OK);
     }
