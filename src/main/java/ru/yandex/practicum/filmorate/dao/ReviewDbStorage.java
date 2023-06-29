@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.ReviewStorage;
 import ru.yandex.practicum.filmorate.model.Review;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,6 +20,18 @@ public class ReviewDbStorage implements ReviewStorage {
     @Autowired
     public ReviewDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public static Review mapRowToReview(ResultSet resultSet, long rowNum) throws SQLException {
+
+        return Review.builder()
+                .reviewId(resultSet.getLong("id"))
+                .content(resultSet.getString("content"))
+                .isPositive(resultSet.getBoolean("is_positive"))
+                .userId(resultSet.getLong("user_id"))
+                .filmId(resultSet.getLong("film_id"))
+                .useful(resultSet.getInt("useful"))
+                .build();
     }
 
     @Override
@@ -101,15 +112,5 @@ public class ReviewDbStorage implements ReviewStorage {
                 "(SELECT COUNT (*) FROM review_likes WHERE id = ? AND is_like) - " +
                 "(SELECT COUNT (*) FROM review_likes WHERE id = ? AND NOT is_like)";
         return jdbcTemplate.queryForObject(sqlQuery, Integer.class, reviewId, reviewId);
-    }
-
-    public static Review mapRowToReview(ResultSet resultSet, long rowNum) throws SQLException {
-        long id = resultSet.getLong("id");
-        String content = resultSet.getString("content");
-        boolean isPositive = resultSet.getBoolean("is_positive");
-        long userId = resultSet.getLong("user_id");
-        long filmId = resultSet.getLong("film_id");
-        int useful = resultSet.getInt("useful");
-        return new Review(id, content, isPositive, userId, filmId, useful);
     }
 }
