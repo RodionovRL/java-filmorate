@@ -72,7 +72,6 @@ public class UserService {
                 .collect(Collectors.toList());
 
         log.info("Возвращены общие друзья пользователя с id={} и пользователя с id={} :{}", id, otherId, commonFriends);
-
         return commonFriends;
     }
 
