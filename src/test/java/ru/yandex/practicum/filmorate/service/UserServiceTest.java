@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
@@ -38,7 +38,7 @@ class UserServiceTest {
 
     @Test
     void shouldBeUserServiceExceptionWhenUpdateUserWithUnknownId() {
-        UserNotFoundException exception = Assertions.assertThrows(UserNotFoundException.class,
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
                 () -> userService.updateUser(user));
 
         assertEquals(String.format("пользователь с запрошенным id = %s не найден", user.getId()), exception.getMessage());

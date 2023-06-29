@@ -7,8 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -98,7 +97,7 @@ public class FilmDbStorage implements FilmStorage {
             return film;
         } catch (RuntimeException e) {
             log.error("фильм с запрошенным id {} не найден", id);
-            throw new FilmNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "фильм с запрошенным id = %s не найден", id));
         }
     }
@@ -213,7 +212,7 @@ public class FilmDbStorage implements FilmStorage {
             return jdbcTemplate.queryForObject(sqlQuery, this::genreMapper, id);
         } catch (RuntimeException e) {
             log.error("жанр с запрошенным id {} не найден", id);
-            throw new GenreNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "жанр с запрошенным id = %s не найден", id));
         }
     }
@@ -235,7 +234,7 @@ public class FilmDbStorage implements FilmStorage {
             return jdbcTemplate.queryForObject(sqlQuery, this::mpaMapper, id);
         } catch (RuntimeException e) {
             log.error("mpa с запрошенным id {} не найден", id);
-            throw new GenreNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "mpa с запрошенным id = %s не найден", id));
         }
     }
@@ -442,20 +441,14 @@ public class FilmDbStorage implements FilmStorage {
 
         jdbcTemplate.query(sqlQuery, rs -> {
             Genre genre = new Genre(rs.getInt("genre_id"), rs.getString("name"));
-            log.debug("rs={}", rs);
-            log.debug("genre={}", genre.toString());
             long filmId = rs.getLong("film_id");
-            log.debug("film_id={}", filmId);
             allFilmsGenres.putIfAbsent(filmId, new HashSet<>());
-            log.debug("allFilmsGenres={}", allFilmsGenres);
             allFilmsGenres.get(filmId).add(genre);
-            log.debug("allFilmsGenres2={}", allFilmsGenres);
         }, filmsIds.toArray());
         films.stream()
                 .peek(f -> f.setGenres(new HashSet<>()))
                 .filter(f -> allFilmsGenres.containsKey(f.getId()))
-                .peek(f -> f.setGenres(allFilmsGenres.get(f.getId())))
-                .forEach(f -> log.debug("f={}", f));
+                .forEach(f -> f.setGenres(allFilmsGenres.get(f.getId())));
     }
 
     private void setDirectorsToFilms(List<Film> films) {
@@ -474,19 +467,13 @@ public class FilmDbStorage implements FilmStorage {
 
         jdbcTemplate.query(sqlQuery, rs -> {
             Director director = new Director(rs.getLong("director_id"), rs.getString("name"));
-            log.debug("rs={}", rs);
-            log.debug("director={}", director.toString());
             long filmId = rs.getLong("film_id");
-            log.debug("film_id={}", filmId);
             allFilmsDirectors.putIfAbsent(filmId, new HashSet<>());
-            log.debug("allFilmsDirectors={}", allFilmsDirectors);
             allFilmsDirectors.get(filmId).add(director);
-            log.debug("allFilmsDirectors2={}", allFilmsDirectors);
         }, filmsIds.toArray());
         films.stream()
                 .peek(f -> f.setDirectors(new HashSet<>()))
                 .filter(f -> allFilmsDirectors.containsKey(f.getId()))
-                .peek(f -> f.setDirectors(allFilmsDirectors.get(f.getId())))
-                .forEach(f -> log.debug("f={}", f));
+                .forEach(f -> f.setDirectors(allFilmsDirectors.get(f.getId())));
     }
 }

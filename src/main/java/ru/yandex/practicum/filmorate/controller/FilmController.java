@@ -69,7 +69,7 @@ public class FilmController {
     @PutMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Boolean> setLikeToFilm(@PathVariable("id") Long id,
                                                  @PathVariable("userId") Long userId) {
-        log.info("получен запрос на на добавление фильму с id= {} лайка от пользователя с id= {}", id, userId);
+        log.info("получен запрос на добавление фильму с id= {} лайка от пользователя с id= {}", id, userId);
         boolean result = filmService.setLikeToFilm(id, userId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

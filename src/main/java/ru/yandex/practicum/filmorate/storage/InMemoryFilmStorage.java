@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -126,7 +126,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private void checkFilmIsContains(Long id) {
         if (!films.containsKey(id)) {
             log.error("updateFilm: фильм с id = {} не найден", id);
-            throw new FilmNotFoundException("updateFilm: фильм с запрошенным id не найден");
+            throw new NotFoundException("updateFilm: фильм с запрошенным id не найден");
         }
     }
 
