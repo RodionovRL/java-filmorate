@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -13,10 +14,11 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Director {
     @NotNull
     @NonNull
-    private int id;
+    private long id;
 
     @NotBlank
     private String name;
