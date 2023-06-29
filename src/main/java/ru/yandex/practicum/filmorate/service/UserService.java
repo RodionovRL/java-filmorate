@@ -89,9 +89,9 @@ public class UserService {
 
     public List<Film> getUserRecommendations(long id) {
         List<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
-        log.info("Получены id рекомендованных фильмов для пользователя с id={}", id);
+        log.info("Получены id ({} шт.)  рекомендованных фильмов для пользователя с id={}", recommendFilmIds.size(), id);
         List<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
-        log.info("Возвращены рекомендации фильмов для пользователя с id={}", id);
+        log.info("Возвращено {} рекомендаций для пользователя с id {}", recommendFilms.size(), id);
         return recommendFilms;
     }
 
