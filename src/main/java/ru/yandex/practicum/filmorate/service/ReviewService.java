@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.ReviewStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
-import ru.yandex.practicum.filmorate.exception.ReviewNotFoundException;
-import ru.yandex.practicum.filmorate.model.*;
-
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Review;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,49 +28,47 @@ public class ReviewService {
 	}
 
 	public Review addReview(Review review) {
-		userStorage.getUserById(review.getUserId());
-		filmStorage.getFilmById(review.getFilmId());
-		long id = reviewStorage.addReview(review);
-		review.setReviewId(id);
+		userStorage.getUserById ( review.getUserId () );
+		filmStorage.getFilmById ( review.getFilmId () );
+		long id = reviewStorage.addReview ( review );
+		review.setReviewId ( id );
 		return review;
 	}
 
 	public Review changeReview(Review review) {
-		reviewStorage.changeReview(review);
-		Review result = reviewStorage.getReviewById(review.getReviewId());
-		return result;
+		reviewStorage.changeReview ( review );
+		return reviewStorage.getReviewById ( review.getReviewId () );
 	}
 
 	public void deleteReview(long id) {
-		Review review = getReviewById(id);
-		reviewStorage.deleteReview(id);
+		getReviewById ( id );
+		reviewStorage.deleteReview ( id );
 	}
 
 	public Review getReviewById(long id) {
 		try {
-			return reviewStorage.getReviewById(id);
+			return reviewStorage.getReviewById ( id );
 		} catch (EmptyResultDataAccessException ex) {
-			throw new ReviewNotFoundException(String.format("Review with id %d isn't exist", id));
+			throw new NotFoundException ( String.format ( "Review with id %d isn't exist", id ) );
 		}
 	}
 
-	public List<Review> getReviewByFilmId(Optional<Long> filmId, int count) {
-		List<Review> allReviews;
-		if (filmId.isPresent()) {
-			allReviews = reviewStorage.getReviewByFilmId(filmId.get(), count);
+	public List < Review > getReviewByFilmId(Optional < Long > filmId, int count) {
+		List < Review > allReviews;
+		if (filmId.isPresent ()) {
+			allReviews = reviewStorage.getReviewByFilmId ( filmId.get (), count );
 		} else {
-			allReviews = reviewStorage.getCountReview(count);
+			allReviews = reviewStorage.getCountReview ( count );
 		}
-		allReviews.sort((o1, o2) -> Integer.compare(o2.getUseful(), o1.getUseful()));
+		allReviews.sort ( (o1, o2) -> Integer.compare ( o2.getUseful (), o1.getUseful () ) );
 		return allReviews;
 	}
 
 	public void addLike(long id, long userId, boolean islike) {
-		reviewStorage.addLike(id, userId, islike);
+		reviewStorage.addLike ( id, userId, islike );
 	}
 
 	public void deleteLike(long id, long userId, boolean isLike) {
-		reviewStorage.deleteLike(id, userId, isLike);
+		reviewStorage.deleteLike ( id, userId, isLike );
 	}
-
 }
