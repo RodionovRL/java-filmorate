@@ -240,7 +240,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsByIds(Set<Long> filmIds) {
+    public List<Film> getFilmsByIds(List<Long> filmIds) {
 
         String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
 

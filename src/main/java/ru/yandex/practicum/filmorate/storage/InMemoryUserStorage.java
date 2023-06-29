@@ -78,8 +78,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Set<Long> getUserRecommendations(long id) {
-        return new HashSet<>();
+    public List<Long> getUserRecommendations(long id) {
+        return new ArrayList<>();
     }
 
     private void checkUserIsExist(Long id) {
