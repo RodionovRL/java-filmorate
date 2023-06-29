@@ -188,7 +188,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY RATE DESC " +
                     "LIMIT ? ";
             log.debug("возвращён ТОП-{} фильмов, без параметров", count);
-            return jdbcTemplate.query(sqlQuery, this::filmMapper, count);
+            films = jdbcTemplate.query(sqlQuery, this::filmMapper, count);
         }
         setGenresToFilms(films);
         setDirectorsToFilms(films);

@@ -156,9 +156,9 @@ public class UserDbStorage implements UserStorage {
             }
         }
         if (recomendId != 0) {
-            Set<Long> recomendFilmIds = getUserLikes(recomendId);
-            recomendFilmIds.removeAll(userLikes);
-            return recomendFilmIds;
+            Set<Long> recommendFilmIds = getUserLikes(recomendId);
+            recommendFilmIds.removeAll(userLikes);
+            return recommendFilmIds;
         }
         return Collections.emptySet();
     }
