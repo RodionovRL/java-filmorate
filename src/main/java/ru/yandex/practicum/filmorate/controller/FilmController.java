@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.util.SearchBy;
 
@@ -21,10 +22,12 @@ import java.util.List;
 @RequestMapping()
 public class FilmController {
     private final FilmService filmService;
+    private final FeedService feedService;
 
     @Autowired
-    public FilmController(FilmService filmService) {
+    public FilmController(FilmService filmService, FeedService feedService) {
         this.filmService = filmService;
+        this.feedService = feedService;
     }
 
     @PostMapping("/films")
@@ -71,6 +74,9 @@ public class FilmController {
                                                  @PathVariable("userId") Long userId) {
         log.info("получен запрос на добавление фильму с id= {} лайка от пользователя с id= {}", id, userId);
         boolean result = filmService.setLikeToFilm(id, userId);
+        if (result) {
+            feedService.userAddLike(userId, id);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -79,13 +85,16 @@ public class FilmController {
                                                    @PathVariable("userId") Long userId) {
         log.info("получен запрос на на удаление у фильма с id= {} лайка пользователя с id= {}", id, userId);
         boolean result = filmService.delLikeFromFilm(id, userId);
+        if (!result) {
+            feedService.userRemoveLike(userId, id);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "/films/popular")
     public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
-                                      @RequestParam(defaultValue = "-1") Integer genreId,
-                                      @RequestParam(defaultValue = "-1") Integer year) {
+                                                      @RequestParam(defaultValue = "-1") Integer genreId,
+                                                      @RequestParam(defaultValue = "-1") Integer year) {
         List<Film> films = filmService.getPopularFilms(count, genreId, year);
         return new ResponseEntity<>(films, HttpStatus.OK);
     }

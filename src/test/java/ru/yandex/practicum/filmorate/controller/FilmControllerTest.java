@@ -15,6 +15,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
@@ -33,6 +34,8 @@ public class FilmControllerTest {
 
     @MockBean
     private FilmService filmService;
+    @MockBean
+    private FeedService feedService;
 
     @InjectMocks
     private FilmController controller;
