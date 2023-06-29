@@ -28,47 +28,47 @@ public class ReviewService {
 	}
 
 	public Review addReview(Review review) {
-		userStorage.getUserById ( review.getUserId () );
-		filmStorage.getFilmById ( review.getFilmId () );
+		userStorage.getUserById(review.getUserId());
+		filmStorage.getFilmById(review.getFilmId());
 		long id = reviewStorage.addReview ( review );
-		review.setReviewId ( id );
+		review.setReviewId(id);
 		return review;
 	}
 
 	public Review changeReview(Review review) {
-		reviewStorage.changeReview ( review );
-		return reviewStorage.getReviewById ( review.getReviewId () );
+		reviewStorage.changeReview(review);
+		return reviewStorage.getReviewById(review.getReviewId());
 	}
 
 	public void deleteReview(long id) {
-		getReviewById ( id );
-		reviewStorage.deleteReview ( id );
+		getReviewById(id);
+		reviewStorage.deleteReview(id);
 	}
 
 	public Review getReviewById(long id) {
 		try {
-			return reviewStorage.getReviewById ( id );
+			return reviewStorage.getReviewById(id);
 		} catch (EmptyResultDataAccessException ex) {
-			throw new NotFoundException ( String.format ( "Review with id %d isn't exist", id ) );
+			throw new NotFoundException(String.format ( "Review with id %d isn't exist", id));
 		}
 	}
 
-	public List < Review > getReviewByFilmId(Optional < Long > filmId, int count) {
-		List < Review > allReviews;
-		if (filmId.isPresent ()) {
-			allReviews = reviewStorage.getReviewByFilmId ( filmId.get (), count );
+	public List<Review> getReviewByFilmId(Optional<Long> filmId, int count) {
+		List<Review> allReviews;
+		if (filmId.isPresent()) {
+			allReviews = reviewStorage.getReviewByFilmId(filmId.get (), count);
 		} else {
-			allReviews = reviewStorage.getCountReview ( count );
+			allReviews = reviewStorage.getCountReview(count);
 		}
-		allReviews.sort ( (o1, o2) -> Integer.compare ( o2.getUseful (), o1.getUseful () ) );
+		allReviews.sort((o1, o2) -> Integer.compare(o2.getUseful (), o1.getUseful()));
 		return allReviews;
 	}
 
 	public void addLike(long id, long userId, boolean islike) {
-		reviewStorage.addLike ( id, userId, islike );
+		reviewStorage.addLike(id, userId, islike);
 	}
 
 	public void deleteLike(long id, long userId, boolean isLike) {
-		reviewStorage.deleteLike ( id, userId, isLike );
+		reviewStorage.deleteLike(id, userId, isLike);
 	}
 }
