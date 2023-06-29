@@ -29,13 +29,11 @@ public class ReviewService {
 	}
 
 	public Review addReview(Review review) {
-		if (isFilmExist(review.getFilmId()) && isExistUser(review.getUserId())) {
-			long id = reviewStorage.addReview(review);
-			review.setReviewId(id);
-			return review;
-		} else {
-			throw new ReviewNotFoundException("Model not found");
-		}
+		userStorage.getUserById(review.getUserId());
+		filmStorage.getFilmById(review.getFilmId());
+		long id = reviewStorage.addReview(review);
+		review.setReviewId(id);
+		return review;
 	}
 
 	public Review changeReview(Review review) {
@@ -76,17 +74,4 @@ public class ReviewService {
 		reviewStorage.deleteLike(id, userId, isLike);
 	}
 
-	private boolean isExistUser(long id) {
-		Optional<User> user = Optional.ofNullable(userStorage.getUserById(id));
-		return user.isPresent();
-	}
-
-	private boolean isFilmExist(long id) {
-		try {
-			filmStorage.getFilmById(id);
-		} catch (EmptyResultDataAccessException ex) {
-			return false;
-		}
-		return true;
-	}
 }

@@ -97,7 +97,7 @@ public class UserService {
     }
 
     private void checkName(@NotNull User user) {
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank() || user.getName().isBlank()) {
             log.info("Поле name пустое, в качестве имени установлен login=\"{}\"", user.getLogin());
             user.setName(user.getLogin());
         }
