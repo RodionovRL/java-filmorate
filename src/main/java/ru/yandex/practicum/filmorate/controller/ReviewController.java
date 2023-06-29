@@ -20,34 +20,27 @@ import java.util.Optional;
 @Validated
 public class ReviewController {
     private final ReviewService reviewService;
-    private final FeedService feedService;
 
     @Autowired
     public ReviewController(ReviewService reviewService, FeedService feedService) {
         this.reviewService = reviewService;
-        this.feedService = feedService;
     }
 
     @PostMapping("/reviews")
     public ResponseEntity<Review> addReview(@Valid @RequestBody Review review) {
         log.info("User {} added", review.getContent());
-        review = reviewService.addReview(review);
-        feedService.userAddReview(review.getUserId(), review.getReviewId());
-        return new ResponseEntity<>(review, HttpStatus.CREATED);
+        return new ResponseEntity<>(reviewService.addReview(review), HttpStatus.CREATED);
     }
 
     @PutMapping("/reviews")
     public ResponseEntity<Review> changeReview(@RequestBody Review review) {
         log.info("Review = {} was changed userId = {}", review.getReviewId(), review.getUserId());
-        Review changedReview = reviewService.changeReview(review);
-        feedService.userUpdateReview(changedReview.getUserId(), changedReview.getReviewId());
-        return new ResponseEntity<>(changedReview, HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.changeReview(review), HttpStatus.OK);
     }
 
     @DeleteMapping("/reviews/{id}")
     public void deleteReview(@PathVariable long id) {
         log.info("Review {} was deleted", id);
-        feedService.userRemoveReview(id);
         reviewService.deleteReview(id);
     }
 
