@@ -100,7 +100,6 @@ public class UserDbStorage implements UserStorage {
             return false;
         }
         checkUserIsExist(friendId, jdbcTemplate);
-        getUserById(id).addFriend(friendId);
 
         String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) " +
                 "VALUES (?, ?)";

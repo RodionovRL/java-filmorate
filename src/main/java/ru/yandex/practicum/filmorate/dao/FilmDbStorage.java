@@ -112,8 +112,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
         UserDbStorage.checkUserIsExist(userId, jdbcTemplate);
-        Film film = getFilmById(filmId);
-        film.addLike(userId);
+        getFilmById(filmId);
         String sqlQuery = "MERGE INTO LIKES " +
                 "(FILM_ID, USER_ID)" +
                 "VALUES (?, ?)";
@@ -125,8 +124,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public boolean delLikeFromFilm(Long filmId, Long userId) {
-        Film film = getFilmById(filmId);
-        film.delLike(userId);
+        getFilmById(filmId);
         String sqlQuery = "DELETE FROM LIKES " +
                 "WHERE FILM_ID = ? AND USER_ID = ?";
         int numChanged = jdbcTemplate.update(sqlQuery,

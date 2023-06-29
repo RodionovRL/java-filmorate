@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.util.SearchBy;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -54,33 +53,19 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public boolean setLikeToFilm(Long filmId, Long userId) {
-        Film film = getFilmById(filmId);
-        if (film.addLike(userId)) {
-            log.info("у фильма с id={} удалён лайк пользователя с id={}", filmId, userId);
-            return true;
-        }
-        return false;
+        getFilmById(filmId);
+        return true;
     }
 
     @Override
     public boolean delLikeFromFilm(Long filmId, Long userId) {
-        Film film = getFilmById(filmId);
-        if (film.delLike(userId)) {
-            log.info("у фильма с id={} удалён лайк пользователя с id={}", filmId, userId);
-            return true;
-        }
-        return false;
+        getFilmById(filmId);
+        return true;
     }
 
     @Override
     public List<Film> getTopPopularFilms(int count, int genreId, int year) {
-        List<Film> topFilms = getAllFilms().stream()
-                .sorted(Film::compareByLikes)
-                .limit(count)
-                .collect(Collectors.toList());
-
-        log.debug("возвращён ТОП-{} фильмов: {}", count, topFilms);
-        return topFilms;
+        return new ArrayList<>();
     }
 
     @Override

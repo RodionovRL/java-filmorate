@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.yandex.practicum.filmorate.util.AfterInternationCinemaDay;
 
@@ -18,8 +17,6 @@ import static java.util.Comparator.comparing;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
-    @JsonIgnore
-    private final Set<Long> likes = new HashSet<>();
     @EqualsAndHashCode.Exclude
     private long id;
     @NotNull(message = "Не задано название фильма")
@@ -36,18 +33,6 @@ public class Film {
     private Mpa mpa;
 
     private Set<Genre> genres = new TreeSet<>(comparing(Genre::getId, Comparator.naturalOrder()));
-
-    public int compareByLikes(Film f2) {
-        return f2.getLikes().size() - likes.size();
-    }
-
-    public boolean addLike(long userId) {
-        return likes.add(userId);
-    }
-
-    public boolean delLike(long userId) {
-        return likes.remove(userId);
-    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
