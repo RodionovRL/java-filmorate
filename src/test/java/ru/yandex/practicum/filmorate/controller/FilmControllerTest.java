@@ -34,8 +34,6 @@ public class FilmControllerTest {
 
     @MockBean
     private FilmService filmService;
-    @MockBean
-    private FeedService feedService;
 
     @InjectMocks
     private FilmController controller;
