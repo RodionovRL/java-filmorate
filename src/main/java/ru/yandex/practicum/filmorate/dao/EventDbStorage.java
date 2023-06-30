@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.EventStorage;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.EventType;
 import ru.yandex.practicum.filmorate.model.event.Operation;
@@ -34,7 +34,7 @@ public class EventDbStorage implements EventStorage {
     @Override
     public List<Event> getLastEvents(long userId) {
         if (!isUserExist(userId)) {
-            throw new UserNotFoundException(
+            throw new NotFoundException(
                     String.format("Попытка получить фид несуществующего пользователя с id=%d", userId)
             );
         }
@@ -86,8 +86,8 @@ public class EventDbStorage implements EventStorage {
                 "LIMIT 1";
         Integer userId = jdbcTemplate.queryForObject(sqlQuery, Integer.class, reviewId);
         if (userId == null) {
-            throw new UserNotFoundException(
-                    String.format("Попытка получить пользователя не остовлявшего ревью id %d", reviewId)
+            throw new NotFoundException(
+                    String.format("Попытка получить пользователя не оставлявшего ревью id %d", reviewId)
             );
         }
         return userId;

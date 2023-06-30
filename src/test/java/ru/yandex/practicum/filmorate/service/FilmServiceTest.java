@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.api.EventStorage;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -90,7 +90,7 @@ class FilmServiceTest {
 
     @Test
     void shouldBeFilmServiceExceptionWhenUpdateFilmWithUnknownId() {
-        FilmNotFoundException exception = Assertions.assertThrows(FilmNotFoundException.class,
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
                 () -> filmService.updateFilm(film));
 
         assertEquals("updateFilm: фильм с запрошенным id не найден", exception.getMessage());

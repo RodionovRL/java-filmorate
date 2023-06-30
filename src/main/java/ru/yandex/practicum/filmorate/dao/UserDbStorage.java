@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ErrorInsertToDbException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
@@ -32,7 +32,7 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
         } catch (EmptyResultDataAccessException e) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
     }
@@ -60,7 +60,7 @@ public class UserDbStorage implements UserStorage {
                 user.getId());
         if (numChanged == 0) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
         return user;
@@ -81,7 +81,7 @@ public class UserDbStorage implements UserStorage {
             return jdbcTemplate.queryForObject(sqlQuery, this::userMapper, id);
         } catch (RuntimeException e) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
     }
@@ -100,7 +100,6 @@ public class UserDbStorage implements UserStorage {
             return false;
         }
         checkUserIsExist(friendId, jdbcTemplate);
-        getUserById(id).addFriend(friendId);
 
         String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) " +
                 "VALUES (?, ?)";

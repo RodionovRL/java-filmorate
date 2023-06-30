@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,10 +12,9 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Director {
-    @NotNull
-    @NonNull
-    private int id;
+    private long id;
 
     @NotBlank
     private String name;
