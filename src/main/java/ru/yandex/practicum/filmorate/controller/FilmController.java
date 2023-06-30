@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.util.SearchBy;
 
@@ -22,12 +21,10 @@ import java.util.List;
 @RequestMapping()
 public class FilmController {
     private final FilmService filmService;
-    private final FeedService feedService;
 
     @Autowired
-    public FilmController(FilmService filmService, FeedService feedService) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.feedService = feedService;
     }
 
     @PostMapping("/films")
@@ -73,22 +70,14 @@ public class FilmController {
     public ResponseEntity<Boolean> setLikeToFilm(@PathVariable("id") Long id,
                                                  @PathVariable("userId") Long userId) {
         log.info("получен запрос на на добавление фильму с id= {} лайка от пользователя с id= {}", id, userId);
-        boolean result = filmService.setLikeToFilm(id, userId);
-        if (result) {
-            feedService.userAddLike(userId, id);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(filmService.setLikeToFilm(id, userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Boolean> delLikeFromFilm(@PathVariable("id") Long id,
                                                    @PathVariable("userId") Long userId) {
         log.info("получен запрос на на удаление у фильма с id= {} лайка пользователя с id= {}", id, userId);
-        boolean result = filmService.delLikeFromFilm(id, userId);
-        if (!result) {
-            feedService.userRemoveLike(userId, id);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(filmService.delLikeFromFilm(id, userId), HttpStatus.OK);
     }
 
     @GetMapping(value = "/films/popular")
