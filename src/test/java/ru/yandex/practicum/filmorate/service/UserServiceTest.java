@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.api.EventStorage;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -21,11 +22,12 @@ class UserServiceTest {
     FilmStorage filmStorage;
     UserService userService;
     User user;
+    EventStorage eventStorage;
 
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage, filmStorage);
+        userService = new UserService(userStorage, filmStorage, eventStorage);
 
         user = User.builder()
                 .id(Integer.MAX_VALUE)

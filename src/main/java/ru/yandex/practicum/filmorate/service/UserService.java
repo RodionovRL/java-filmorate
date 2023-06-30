@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.api.EventStorage;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -19,11 +21,13 @@ public class UserService {
 
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final EventStorage eventStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage, FilmStorage filmStorage) {
+    public UserService(UserStorage userStorage, FilmStorage filmStorage, EventStorage eventStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
+        this.eventStorage = eventStorage;
     }
 
     public User addUser(User newUser) {
@@ -53,6 +57,7 @@ public class UserService {
     public boolean addFriend(Long id, Long friendId) {
         if (userStorage.addFriend(id, friendId)) {
             log.info("Пользователь id={} добавил в друзья пользователя id={}", id, friendId);
+            eventStorage.addEvent(Event.userAddFriend(id, friendId));
             return true;
         }
         return false;
@@ -81,6 +86,7 @@ public class UserService {
     public boolean deleteUsersFriend(Long id, Long exFriendId) {
         if (userStorage.deleteFriend(id, exFriendId)) {
             log.info("User id={} и User id={} больше не друзья", id, exFriendId);
+            eventStorage.addEvent(Event.userRemoveFriend(id, exFriendId));
             return true;
         }
         return false;
@@ -92,6 +98,10 @@ public class UserService {
         List<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
         log.info("Возвращено {} рекомендаций для пользователя с id {}", recommendFilms.size(), id);
         return recommendFilms;
+    }
+
+    public List<Event> getFeedById(long userId) {
+        return eventStorage.getLastEvents(userId);
     }
 
     private void checkName(@NotNull User user) {
