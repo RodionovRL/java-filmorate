@@ -234,7 +234,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsByIds(Set<Long> filmIds) {
+    public List<Film> getFilmsByIds(List<Long> filmIds) {
 
         String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
 
@@ -247,13 +247,35 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsByDirector(long directorId) {
-        String sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
-                " F.MPA_ID,  M.NAME MPA_NAME " +
-                "FROM FILM F " +
-                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
-                "INNER JOIN film_director fd on f.id = fd.FILM_ID " +
-                "WHERE fd.DIRECTOR_ID = ?";
+    public List<Film> getFilmsByDirector(long directorId, String param) {
+        String sqlQuery = "";
+
+        if (param.equals("year")) {
+            sqlQuery = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION," +
+                    " F.MPA_ID,  M.NAME MPA_NAME " +
+                    "FROM FILM F " +
+                    "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                    "INNER JOIN film_director fd on f.id = fd.FILM_ID " +
+                    "WHERE fd.DIRECTOR_ID = ? " +
+                    "ORDER BY F.RELEASE_DATE";
+
+        } else if (param.equals("likes")) {
+            sqlQuery = "SELECT F.ID,\n" +
+                    "       F.NAME,\n" +
+                    "       F.DESCRIPTION,\n" +
+                    "       F.RELEASE_DATE,\n" +
+                    "       F.DURATION,\n" +
+                    "       F.MPA_ID,\n" +
+                    "       M.NAME MPA_NAME,\n" +
+                    "       COUNT(L.USER_ID)\n" +
+                    "FROM FILM F\n" +
+                    "         LEFT JOIN MPA M ON F.MPA_ID = M.ID\n" +
+                    "         INNER JOIN FILM_DIRECTOR FD on F.ID = FD.FILM_ID\n" +
+                    "         LEFT JOIN LIKES L on F.ID = L.FILM_ID\n" +
+                    "WHERE FD.DIRECTOR_ID = ?\n" +
+                    "GROUP BY F.ID\n" +
+                    "ORDER BY COUNT(L.USER_ID) DESC";
+        }
 
         return jdbcTemplate.query(sqlQuery, this::filmMapper, directorId);
     }

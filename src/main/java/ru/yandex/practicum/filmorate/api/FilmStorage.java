@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.util.SearchBy;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface FilmStorage {
     Film addFilm(Film film);
@@ -33,9 +32,9 @@ public interface FilmStorage {
 
     Mpa getMpaById(Integer id);
 
-    List<Film> getFilmsByIds(Set<Long> recommendFilmIds);
+    List<Film> getFilmsByIds(List<Long> recommendFilmIds);
 
-    List<Film> getFilmsByDirector(long directorId);
+    List<Film> getFilmsByDirector(long directorId, String param);
 
     boolean deleteFilmById(Long id);
 

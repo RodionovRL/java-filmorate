@@ -104,12 +104,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsByDirector(long directorId) {
+    public List<Film> getFilmsByDirector(long directorId, String param) {
         return new ArrayList<>();
     }
 
     @Override
-    public List<Film> getFilmsByIds(Set<Long> recommendFilmIds) {
+    public List<Film> getFilmsByIds(List<Long> recommendFilmIds) {
         return new ArrayList<>();
     }
 

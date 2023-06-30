@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.model.event.Event;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,7 +76,6 @@ public class UserService {
                 .collect(Collectors.toList());
 
         log.info("Возвращены общие друзья пользователя с id={} и пользователя с id={} :{}", id, otherId, commonFriends);
-
         return commonFriends;
     }
 
@@ -94,11 +92,11 @@ public class UserService {
         return false;
     }
 
-    public Collection<Film> getUserRecommendations(long id) {
-        Set<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
-        log.info("Получены id рекомендованных фильмов для пользователя с id={}", id);
-        Collection<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
-        log.info("Возвращены рекомендации фильмов для пользователя с id={}", id);
+    public List<Film> getUserRecommendations(long id) {
+        List<Long> recommendFilmIds = userStorage.getUserRecommendations(id);
+        log.info("Получены id ({} шт.)  рекомендованных фильмов для пользователя с id={}", recommendFilmIds.size(), id);
+        List<Film> recommendFilms = filmStorage.getFilmsByIds(recommendFilmIds);
+        log.info("Возвращено {} рекомендаций для пользователя с id {}", recommendFilms.size(), id);
         return recommendFilms;
     }
 
@@ -107,7 +105,7 @@ public class UserService {
     }
 
     private void checkName(@NotNull User user) {
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank() || user.getName().isBlank()) {
             log.info("Поле name пустое, в качестве имени установлен login=\"{}\"", user.getLogin());
             user.setName(user.getLogin());
         }

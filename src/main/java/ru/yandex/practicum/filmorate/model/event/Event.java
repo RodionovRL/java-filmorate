@@ -13,15 +13,15 @@ import java.util.Map;
 @Value
 @Builder
 public class Event {
-    @NonFinal
-    @Setter
-    long eventId;
     @NotBlank(message = "ID пользователя не может быть пустым")
     long userId;
     @NotBlank(message = "ID сущности не может быть пустым")
     long entityId;
     EventType eventType;
     Operation operation;
+    @NonFinal
+    @Setter
+    long eventId;
     @NonFinal
     long timestamp;
 
