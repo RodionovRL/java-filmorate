@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS likes
 (
     user_id BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     film_id BIGINT    NOT NULL REFERENCES film (id) ON DELETE CASCADE,
+    mark    INT,
     date    TIMESTAMP, --NOT NULL,
     CONSTRAINT likes_pk PRIMARY KEY (user_id, film_id)
 );

@@ -34,6 +34,8 @@ public class Film {
 
     private Set<Genre> genres = new TreeSet<>(comparing(Genre::getId, Comparator.naturalOrder()));
 
+//    private Map<Long, Integer> marks = new HashMap();
+
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);

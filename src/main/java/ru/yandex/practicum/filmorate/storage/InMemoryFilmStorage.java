@@ -58,6 +58,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public boolean setMarkToFilm(Long filmId, Long userId, Integer mark) {
+        return false;
+    }
+
+    @Override
     public boolean delLikeFromFilm(Long filmId, Long userId) {
         getFilmById(filmId);
         return true;
