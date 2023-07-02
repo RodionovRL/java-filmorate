@@ -118,7 +118,23 @@ public class FilmDbStorage implements FilmStorage {
                 "VALUES (?, ?)";
         int numChanged = jdbcTemplate.update(sqlQuery,
                 filmId,
-                userId);
+                userId
+                );
+        return numChanged > 0;
+    }
+
+    @Override
+    public boolean setMarkToFilm(Long filmId, Long userId, Integer mark) {
+        UserDbStorage.checkUserIsExist(userId, jdbcTemplate);
+        getFilmById(filmId);
+        String sqlQuery = "MERGE INTO LIKES " +
+                "(FILM_ID, USER_ID, MARK)" +
+                "VALUES (?, ?, ?)";
+        int numChanged = jdbcTemplate.update(sqlQuery,
+                filmId,
+                userId,
+                mark
+        );
         return numChanged > 0;
     }
 
@@ -252,6 +268,7 @@ public class FilmDbStorage implements FilmStorage {
         setDirectorsToFilms(films);
         return films;
     }
+
 
     @Override
     public List<Film> getFilmsByDirector(long directorId, String param) {
@@ -496,4 +513,5 @@ public class FilmDbStorage implements FilmStorage {
                 .filter(f -> allFilmsDirectors.containsKey(f.getId()))
                 .forEach(f -> f.setDirectors(allFilmsDirectors.get(f.getId())));
     }
+
 }

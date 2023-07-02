@@ -20,6 +20,8 @@ public interface FilmStorage {
 
     boolean setLikeToFilm(Long filmId, Long userId);
 
+    boolean setMarkToFilm(Long filmId, Long userId, Integer mark);
+
     boolean delLikeFromFilm(Long filmId, Long userId);
 
     List<Film> getTopPopularFilms(int count, int genreId, int year);

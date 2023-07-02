@@ -141,6 +141,7 @@ public class UserDbStorage implements UserStorage {
 
         String sqlQuery1 = "SELECT OL.USER_ID FROM LIKES UL " +
                 "LEFT JOIN LIKES OL ON UL.FILM_ID = OL.FILM_ID AND UL.USER_ID != OL.USER_ID " +
+                "AND ((OL.MARK <= 5 AND UL.MARK <= 5) OR (OL.MARK > 5 AND UL.MARK > 5))" +
                 "WHERE UL.USER_ID = ? " +
                 "GROUP BY OL.USER_ID " +
                 "ORDER BY COUNT (OL.FILM_ID) DESC " +
@@ -155,9 +156,9 @@ public class UserDbStorage implements UserStorage {
 
         if (recomendId != null) {
             String sqlQuery2 = "SELECT OL.FILM_ID FROM LIKES OL " +
-                    "WHERE OL.USER_ID = ? AND OL.FILM_ID NOT IN (" +
+                    "WHERE OL.USER_ID = ? AND OL.MARK >= 5 AND OL.FILM_ID NOT IN (" +
                     "SELECT UL.FILM_ID FROM LIKES UL " +
-                    "WHERE UL.USER_ID = ?)";
+                    "WHERE (UL.USER_ID = ? AND UL.MARK >= 5))";
 
             return jdbcTemplate.queryForList(sqlQuery2, Long.class, recomendId, id);
         }

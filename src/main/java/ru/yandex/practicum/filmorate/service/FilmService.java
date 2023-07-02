@@ -65,6 +65,15 @@ public class FilmService {
         return false;
     }
 
+    public boolean setMarkToFilm(Long filmId, Long userId, Integer mark) {
+        userStorage.getUserById(userId);
+        if (filmStorage.setMarkToFilm(filmId, userId, mark)) {
+            eventStorage.addEvent(Event.userAddLike(userId, filmId));
+            return true;
+        }
+        return false;
+    }
+
     public boolean delLikeFromFilm(Long filmId, Long userId) {
         userStorage.getUserById(userId);
         if (!filmStorage.delLikeFromFilm(filmId, userId)) {

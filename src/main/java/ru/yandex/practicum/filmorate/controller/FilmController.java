@@ -73,6 +73,14 @@ public class FilmController {
         return new ResponseEntity<>(filmService.setLikeToFilm(id, userId), HttpStatus.OK);
     }
 
+    @PutMapping("/films/{id}/like/{userId}/{mark}")
+    public ResponseEntity<Boolean> setMarkToFilm(@PathVariable("id") Long id,
+                                                 @PathVariable("userId") Long userId,
+                                                 @PathVariable("mark") Integer mark) {
+        log.info("получен запрос на на добавление фильму с id= {} оценки {} от пользователя с id= {}", id, mark, userId);
+        return new ResponseEntity<>(filmService.setMarkToFilm(id, userId, mark), HttpStatus.OK);
+    }
+
     @DeleteMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Boolean> delLikeFromFilm(@PathVariable("id") Long id,
                                                    @PathVariable("userId") Long userId) {
