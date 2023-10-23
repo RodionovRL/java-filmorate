@@ -8,13 +8,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ErrorInsertToDbException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -25,6 +24,17 @@ public class UserDbStorage implements UserStorage {
 
     UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
+        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
+        try {
+            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("пользователь с запрошенным id {} не найден", id);
+            throw new NotFoundException(String.format(
+                    "пользователь с запрошенным id = %s не найден", id));
+        }
     }
 
     @Override
@@ -50,7 +60,7 @@ public class UserDbStorage implements UserStorage {
                 user.getId());
         if (numChanged == 0) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
         return user;
@@ -71,9 +81,16 @@ public class UserDbStorage implements UserStorage {
             return jdbcTemplate.queryForObject(sqlQuery, this::userMapper, id);
         } catch (RuntimeException e) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
+    }
+
+    @Override
+    public boolean deleteUserById(Long id) {
+        String sqlQuery = "DELETE FROM USERS WHERE ID = ?";
+        log.info("удаляем пользователя id={}", id);
+        return jdbcTemplate.update(sqlQuery, id) != 0;
     }
 
     @Override
@@ -83,7 +100,6 @@ public class UserDbStorage implements UserStorage {
             return false;
         }
         checkUserIsExist(friendId, jdbcTemplate);
-        getUserById(id).addFriend(friendId);
 
         String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) " +
                 "VALUES (?, ?)";
@@ -119,6 +135,35 @@ public class UserDbStorage implements UserStorage {
         return true;
     }
 
+    @Override
+    public List<Long> getUserRecommendations(long id) {
+        checkUserIsExist(id, jdbcTemplate);
+
+        String sqlQuery1 = "SELECT OL.USER_ID FROM LIKES UL " +
+                "LEFT JOIN LIKES OL ON UL.FILM_ID = OL.FILM_ID AND UL.USER_ID != OL.USER_ID " +
+                "WHERE UL.USER_ID = ? " +
+                "GROUP BY OL.USER_ID " +
+                "ORDER BY COUNT (OL.FILM_ID) DESC " +
+                "LIMIT 1";
+
+        Long recomendId = null;
+        try {
+            recomendId = jdbcTemplate.queryForObject(sqlQuery1, Long.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.info("Пользователь с похожими вкусами для пользователя id={} не найден", id);
+        }
+
+        if (recomendId != null) {
+            String sqlQuery2 = "SELECT OL.FILM_ID FROM LIKES OL " +
+                    "WHERE OL.USER_ID = ? AND OL.FILM_ID NOT IN (" +
+                    "SELECT UL.FILM_ID FROM LIKES UL " +
+                    "WHERE UL.USER_ID = ?)";
+
+            return jdbcTemplate.queryForList(sqlQuery2, Long.class, recomendId, id);
+        }
+        return Collections.emptyList();
+    }
+
     private User userMapper(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
                 .id(resultSet.getLong("id"))
@@ -127,16 +172,5 @@ public class UserDbStorage implements UserStorage {
                 .login(resultSet.getString("login"))
                 .birthday(resultSet.getDate("birthday"))
                 .build();
-    }
-
-    static void checkUserIsExist(Long id, JdbcTemplate jdbcTemplate) {
-        String sqlQuery = "SELECT ID FROM USERS WHERE ID = ?";
-        try {
-            jdbcTemplate.queryForObject(sqlQuery, Long.class, id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
-                    "пользователь с запрошенным id = %s не найден", id));
-        }
     }
 }

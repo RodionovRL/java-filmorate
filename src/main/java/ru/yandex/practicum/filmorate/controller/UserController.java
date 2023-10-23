@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -55,6 +57,16 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable("id") Long id) {
+        log.info("получен запрос на на удаление пользователя с id= {}", id);
+        boolean result = userService.deleteUserById(id);
+        if (!result) {
+            log.warn("Attempt to delete nonexistent user id={}", id);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public ResponseEntity<Boolean> addNewFriend(@PathVariable("id") Long id,
                                                 @PathVariable("friendId") Long friendId
@@ -92,5 +104,21 @@ public class UserController {
 
         List<User> commonFriends = userService.getCommonFriend(id, otherId);
         return new ResponseEntity<>(commonFriends, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public ResponseEntity<List<Film>> getUserRecommendations(@PathVariable("id") Long id) {
+        log.info("получен запрос рекомендаций для пользователя с id {}", id);
+        List<Film> films = userService.getUserRecommendations(id);
+        log.info("возвращено {} рекомендаций для пользователя с id {}", films.size(), id);
+        return new ResponseEntity<>(films, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/feed")
+    public ResponseEntity<List<Event>> getUserFeed(@PathVariable("id") Long id) {
+        log.info("Запрос ленты событий пользователя с id {}", id);
+        List<Event> feed = userService.getFeedById(id);
+        log.info("возвращена лента из {} событий для пользователя с id {}",feed.size(), id);
+        return new ResponseEntity<>(feed, HttpStatus.OK);
     }
 }

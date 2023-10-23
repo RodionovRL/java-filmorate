@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.api.EventStorage;
 import ru.yandex.practicum.filmorate.api.FilmStorage;
 import ru.yandex.practicum.filmorate.api.UserStorage;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmServiceTest {
     FilmStorage filmStorage;
     UserStorage userStorage;
+    EventStorage eventStorage;
 
     FilmService filmService;
     Film film;
@@ -33,7 +35,7 @@ class FilmServiceTest {
     void setUp() {
         userStorage = new InMemoryUserStorage();
         filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService(filmStorage, userStorage);
+        filmService = new FilmService(filmStorage, userStorage, eventStorage);
         filmName = "TestFilm";
         filmDescription = "TestFilm Description";
         filmReleaseDate = LocalDate.of(2000, 1, 1);
@@ -70,7 +72,8 @@ class FilmServiceTest {
                 filmForUpdateReleaseDate,
                 filmForUpdateDuration,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         filmService.updateFilm(filmForUpdate);
 
@@ -87,7 +90,7 @@ class FilmServiceTest {
 
     @Test
     void shouldBeFilmServiceExceptionWhenUpdateFilmWithUnknownId() {
-        FilmNotFoundException exception = Assertions.assertThrows(FilmNotFoundException.class,
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
                 () -> filmService.updateFilm(film));
 
         assertEquals("updateFilm: фильм с запрошенным id не найден", exception.getMessage());
@@ -101,35 +104,40 @@ class FilmServiceTest {
                 LocalDate.of(2001, 1, 1),
                 110,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film2 = new Film(1,
                 "film2",
                 "description2",
                 LocalDate.of(2001, 1, 2),
                 120,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film3 = new Film(1,
                 "film3",
                 "description3",
                 LocalDate.of(2001, 1, 3),
                 130,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film4 = new Film(1,
                 "film4",
                 "description4",
                 LocalDate.of(2001, 1, 4),
                 140,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
         Film film5 = new Film(1,
                 "film5",
                 "description5",
                 LocalDate.of(2001, 1, 5),
                 150,
                 new HashSet<>(),
-                new Mpa());
+                new Mpa(),
+                new HashSet<>());
 
         List<Film> testFilms = new ArrayList<>();
 

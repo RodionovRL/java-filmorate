@@ -3,11 +3,10 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.api.UserStorage;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -43,38 +42,41 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getUsersFriends(Long id) {
-        User user = getUserById(id);
-        if (user.getFriendsIds() == null) {
-            return new ArrayList<>();
-        }
+    public boolean deleteUserById(Long id) {
+        return false;
+    }
 
-        return users.entrySet().stream()
-                .filter(x -> user.getFriendsIds().contains(x.getKey()))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+    @Override
+    public List<User> getUsersFriends(Long id) {
+        getUserById(id);
+        return new ArrayList<>();
     }
 
     @Override
     public boolean addFriend(Long id, Long friendId) {
-        User user = getUserById(id);
+        getUserById(id);
         checkUserIsExist(friendId);
 
-        return user.addFriend(friendId);
+        return false;
     }
 
     @Override
     public boolean deleteFriend(Long id, Long exFriendId) {
-        User user = getUserById(id);
+        getUserById(id);
         checkUserIsExist(exFriendId);
 
-        return user.delFriend(exFriendId);
+        return false;
+    }
+
+    @Override
+    public List<Long> getUserRecommendations(long id) {
+        return new ArrayList<>();
     }
 
     private void checkUserIsExist(Long id) {
         if (!users.containsKey(id)) {
             log.error("пользователь с запрошенным id {} не найден", id);
-            throw new UserNotFoundException(String.format(
+            throw new NotFoundException(String.format(
                     "пользователь с запрошенным id = %s не найден", id));
         }
     }
